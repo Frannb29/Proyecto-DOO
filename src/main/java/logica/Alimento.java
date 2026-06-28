@@ -11,6 +11,6 @@ public class Alimento extends Suministros{
     }
     @Override
     public void usar(Mascotas mascota){
-        mascota.alimentar();
+        mascota.alimentar(this);
     }
 }

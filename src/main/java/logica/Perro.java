@@ -8,11 +8,29 @@ public class Perro extends Mascotas {
         this.higiene -= 20;
         this.salud -= 10;
     }
+
+    public Perro(){
+        super(Habitat.CASA);
+    }
     @Override
-    public void alimentar(){}
+    public void alimentar(Alimento alimento){
+        int recuperacion = alimento.getValor();
+        this.alimentacion += recuperacion;
+
+        if(alimentacion > 100){
+            alimentacion = 100;
+        }
+    }
 
     @Override
-    public void sanar(){}
+    public void sanar(Medicina medicina){
+        int recuperacion = medicina.getValor();
+        this.salud += recuperacion;
+
+        if(this.salud > 100){
+            this.salud = 100;
+        }
+    }
 
     @Override
     public void limpiar(){}

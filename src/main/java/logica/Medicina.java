@@ -6,6 +6,6 @@ public class Medicina extends Suministros{
     }
     @Override
     public void usar(Mascotas mascota){
-        mascota.sanar();
+        mascota.sanar(this);
     }
 }
