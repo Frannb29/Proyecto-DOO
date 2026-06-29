@@ -32,5 +32,5 @@ public abstract class Mascotas {
     public abstract void sanar(Medicina medicina);
     public abstract void limpiar();
     public abstract void jugar();
-    public abstract String getTipo();
+    public abstract TipoMascota getTipo();
 }

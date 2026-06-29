@@ -1,13 +1,12 @@
 package logica;
 
 public class MascotaFactory {
-    public static Mascotas crearMascota(String tipo){
+    public static Mascotas crearMascota(TipoMascota tipo){
         if (tipo == null){
             return null;
         }
-        //convierte el string en minusculas para evitar errores de escritura
-        switch (tipo.toLowerCase()){
-            case "perro":
+        switch (tipo){
+            case PERRO:
                 return new Perro();
             default:
                 throw new IllegalArgumentException("Tipo de mascota desconocido: " + tipo);

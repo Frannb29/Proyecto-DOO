@@ -14,17 +14,19 @@ public class Perro extends Mascotas {
     }
     @Override
     public void alimentar(Alimento alimento){
-        int recuperacion = alimento.getValor();
-        this.alimentacion += recuperacion;
+        int recuperacion = alimento.getComida();
+        if(alimento.getTipoMascota()==TipoMascota.PERRO){
+            this.alimentacion += recuperacion;
 
-        if(alimentacion > 100){
-            alimentacion = 100;
+            if(alimentacion > 100){
+                alimentacion = 100;
+            }
         }
     }
 
     @Override
     public void sanar(Medicina medicina){
-        int recuperacion = medicina.getValor();
+        int recuperacion = medicina.getPuntosCuracion();
         this.salud += recuperacion;
 
         if(this.salud > 100){
@@ -38,7 +40,7 @@ public class Perro extends Mascotas {
     @Override
     public void jugar(){}
     @Override
-    public String getTipo(){
-        return "Perro";
+    public TipoMascota getTipo(){
+        return TipoMascota.PERRO;
     }
 }

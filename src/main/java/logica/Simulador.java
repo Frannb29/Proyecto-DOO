@@ -13,7 +13,7 @@ public class Simulador {
         this.tienda = tienda;
         this.listaMascotas = new ArrayList<>();
     }
-    public void comprarMascota(String tipo){
+    public void comprarMascota(TipoMascota tipo){
         Mascotas nuevaMascota = MascotaFactory.crearMascota(tipo);
         this.listaMascotas.add(nuevaMascota);
     }
