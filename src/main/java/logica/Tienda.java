@@ -1,18 +1,37 @@
 package logica;
 
+import java.util.ArrayList;
+
 public class Tienda{
+    private static Tienda instancia;
+
     private Deposito<Alimento> stockAlimentoPerro;
     private Deposito<Alimento> stockAlimentoGato;
     private Deposito<Medicina> stockMedicinaPequeña;
     private Deposito<Medicina> stockMedicinaMediana;
     private Deposito<Medicina> stockMedicinaGrande;
-    public Tienda(){
+    private ArrayList<Mascotas> mascotas;
+    private ArrayList<Cliente> filaClientes;
+
+    private Tienda(){
         stockAlimentoPerro=new Deposito<Alimento>();
         stockAlimentoGato=new Deposito<Alimento>();
         stockMedicinaPequeña=new Deposito<Medicina>();
         stockMedicinaMediana=new Deposito<Medicina>();
         stockMedicinaGrande=new Deposito<Medicina>();
+
+        mascotas=new ArrayList<>();
+        filaClientes=new ArrayList<>();
     }
+
+    public static Tienda getInstancia(){
+        if(instancia==null){
+            instancia=new Tienda();
+        }
+        
+        return instancia;
+    }
+
     public void comprarSuministros(Jugador jugador, Suministros objeto){
         int valor=objeto.getValor();
         int presupuesto=jugador.getPresupuesto();
@@ -62,5 +81,9 @@ public class Tienda{
             return stockMedicinaGrande.get();
         }
         return null;
+    }
+
+    public void addCliente(Cliente cliente){
+        filaClientes.add(cliente);
     }
 }

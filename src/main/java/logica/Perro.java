@@ -1,12 +1,18 @@
 package logica;
 
 public class Perro extends Mascotas {
+    private int contadorTicks=0;
+
     @Override
     public void pasarTiempo(){
-        this.alimentacion -= 5;
-        this.felicidad -= 3;
-        this.higiene -= 5;
-        this.salud -= 2;
+        contadorTicks++;
+        if(contadorTicks>=5){
+            contadorTicks=0;
+            this.alimentacion -= 5;
+            this.felicidad -= 3;
+            this.higiene -= 5;
+            this.salud -= 2;
+        }
     }
 
     public Perro(){

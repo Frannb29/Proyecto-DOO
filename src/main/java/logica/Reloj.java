@@ -11,7 +11,6 @@ public class Reloj {
 
     public Reloj(){
         observadores=new ArrayList<>();
-
     }
 
     public void addObservador(ObservadorReloj observador){
@@ -46,6 +45,10 @@ public class Reloj {
         if (programador!=null && !programador.isShutdown()) {
             programador.shutdown();
         }
+    }
+
+    public ArrayList<ObservadorReloj> getObservadores(){
+        return observadores;
     }
 
 }
