@@ -3,10 +3,10 @@ package logica;
 public class Perro extends Mascotas {
     @Override
     public void pasarTiempo(){
-        this.alimentacion -= 1;
-        this.felicidad -= 1;
-        this.higiene -= 1;
-        this.salud -= 1;
+        this.alimentacion -= 5;
+        this.felicidad -= 3;
+        this.higiene -= 5;
+        this.salud -= 2;
     }
 
     public Perro(){
@@ -35,10 +35,14 @@ public class Perro extends Mascotas {
     }
 
     @Override
-    public void limpiar(){}
+    public void limpiar(){
+        this.higiene=100;
+    }
 
     @Override
-    public void jugar(){}
+    public void jugar(){
+        this.felicidad=100;
+    }
     @Override
     public TipoMascota getTipo(){
         return TipoMascota.PERRO;
