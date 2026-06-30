@@ -1,6 +1,6 @@
 package logica;
 
-public abstract class Mascotas {
+public abstract class Mascotas implements ObservadorReloj {
     protected int salud = 100;
     protected int higiene = 100;
     protected int felicidad = 100;
