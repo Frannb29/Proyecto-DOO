@@ -32,11 +32,11 @@ public class Tienda{
         return instancia;
     }
 
-    public void comprarSuministros(Jugador jugador, Suministros objeto){
+    public void comprarSuministros(Jugador jugador, Suministros objeto) throws PagoInsuficienteException{
         int valor=objeto.getValor();
         int presupuesto=jugador.getPresupuesto();
         if(valor>presupuesto){
-            System.out.println("Pago insuficiente");
+            throw new PagoInsuficienteException();
         }
         else{
             presupuesto-=valor;
@@ -64,20 +64,35 @@ public class Tienda{
             }
         }
     }
-    public Suministros seleccionarSuministro(TipoSuministro tipo){
+    public Suministros seleccionarSuministro(TipoSuministro tipo) throws DepositoVacioException{
         if(tipo==TipoSuministro.ALIMENTO_PERRO){
+            if(stockAlimentoPerro.getSize()==0){
+                throw new DepositoVacioException("comida de perro");
+            }
             return stockAlimentoPerro.get();
         }
         else if(tipo==TipoSuministro.ALIMENTO_GATO){
+            if(stockAlimentoGato.getSize()==0){
+                throw new DepositoVacioException("comida de gato");
+            }
             return stockAlimentoGato.get();
         }
         else if(tipo==TipoSuministro.MEDICINA_PEQUEÑA){
+            if(stockMedicinaPequeña.getSize()==0){
+                throw new DepositoVacioException("medicina pequeña");
+            }
             return stockMedicinaPequeña.get();
         }
         else if(tipo==TipoSuministro.MEDICINA_MEDIANA){
+            if(stockMedicinaMediana.getSize()==0){
+                throw new DepositoVacioException("medicina mediana");
+            }
             return stockMedicinaMediana.get();
         }
         else if(tipo==TipoSuministro.MEDICINA_GRANDE){
+            if(stockMedicinaGrande.getSize()==0){
+                throw new DepositoVacioException("medicina grande");
+            }
             return stockMedicinaGrande.get();
         }
         return null;
