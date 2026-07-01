@@ -1,39 +1,20 @@
 package logica;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-public class Simulador implements ObservadorReloj{
+public class Simulador{
     private Jugador jugador;
     private Tienda tienda;
-    private List<Mascotas> listaMascotas;
-    private int contadorSegundos;
     private Reloj reloj;
+    private GeneradorCliente generaClientes;
 
-    public Simulador(Jugador jugador, Tienda tienda){
+    public Simulador(Jugador jugador){
         this.jugador = jugador;
-        this.tienda = tienda;
-        this.listaMascotas = new CopyOnWriteArrayList<>();//lista que evita errores con los threads
-        this.contadorSegundos = 0;
+        this.tienda = Tienda.getInstancia();
         reloj = new Reloj();
-        reloj.addObservador(this);
-    }
+        generaClientes=new GeneradorCliente();
 
-    @Override
-    public void pasarTiempo(){
-        contadorSegundos++;
-        if(contadorSegundos % 5 == 0){
-            pasarTurno();
-        }
-    }
-    public void comprarMascota(TipoMascota tipo){
-        Mascotas nuevaMascota = MascotaFactory.crearMascota(tipo);
-        this.listaMascotas.add(nuevaMascota);
-    }
-    public void pasarTurno(){
-        for (Mascotas mascota : listaMascotas){
-            mascota.pasarTiempo();
-        }
+        reloj.addObservador(generaClientes);
+        addMascotaAlSistema(MascotaFactory.crearMascota(TipoMascota.PERRO));
+        addMascotaAlSistema(MascotaFactory.crearMascota(TipoMascota.GATO));
     }
 
     public void iniciarSimulacion(){
@@ -44,7 +25,21 @@ public class Simulador implements ObservadorReloj{
         reloj.detenerReloj();
     }
 
-    public List<Mascotas> getListaMascotas() {
-        return listaMascotas;
+    public void addMascotaAlSistema(Mascotas mascota){
+        reloj.addObservador(mascota);
+        tienda.addMascota(mascota);
+    }
+
+    public void comprarMascota(TipoMascota tipo){
+        Mascotas nuevaMascota = MascotaFactory.crearMascota(tipo);
+        addMascotaAlSistema(nuevaMascota);
+    }
+    
+    public void venderMascotaACliente(){
+        Mascotas mascotaVendida=tienda.atenderCliente(jugador);
+
+        if(mascotaVendida!=null){
+            reloj.removeObservador(mascotaVendida);
+        }
     }
 }

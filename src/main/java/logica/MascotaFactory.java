@@ -8,6 +8,8 @@ public class MascotaFactory {
         switch (tipo){
             case PERRO:
                 return new Perro();
+            case GATO:
+                return new Gato();
             default:
                 throw new IllegalArgumentException("Tipo de mascota desconocido: " + tipo);
         }

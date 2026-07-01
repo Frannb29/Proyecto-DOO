@@ -1,16 +1,17 @@
 package logica;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Reloj {
-    private ArrayList<ObservadorReloj> observadores;
+    private List<ObservadorReloj> observadores;
     private ScheduledExecutorService programador;
 
     public Reloj(){
-        observadores=new ArrayList<>();
+        observadores=new CopyOnWriteArrayList<>();
     }
 
     public void addObservador(ObservadorReloj observador){
@@ -47,7 +48,7 @@ public class Reloj {
         }
     }
 
-    public ArrayList<ObservadorReloj> getObservadores(){
+    public List<ObservadorReloj> getObservadores(){
         return observadores;
     }
 

@@ -100,7 +100,7 @@ public class Tienda{
         return null;
     }
 
-    public void procesarVenta(Cliente cliente, Jugador jugador){
+    private Mascotas procesarVenta(Cliente cliente, Jugador jugador){
         TipoMascota pedido=cliente.getPedido();
         Mascotas mascotaAEntregar=null;
 
@@ -117,27 +117,30 @@ public class Tienda{
             jugador.setPresupuesto(jugador.getPresupuesto()+500); /*por ahora dejo un valor fijo, 
             luego cuando le asignemos un precio a cada mascota se lo cambiamos*/
             System.out.println("Mascota vendida");
+            return mascotaAEntregar;
         }
         else{
             System.out.println("No esta la mascota solicitada en el inventario");
+            return null;
         }
     }
 
-    public void atenderCliente(Jugador jugador){
+    public Mascotas atenderCliente(Jugador jugador){
         if (filaClientes.isEmpty()){
             System.out.println("La tienda esta tranquila. No hay clientes para atender");
-            return;
+            return null;
         }
 
         Cliente clienteAtendido=filaClientes.poll();
         System.out.println("Atendiendo al primer cliente de la fila...");
-        procesarVenta(clienteAtendido, jugador);
+        return procesarVenta(clienteAtendido, jugador);
         
     }    
 
     public void addCliente(Cliente cliente){
         filaClientes.offer(cliente);
-        System.out.println("Nuevo cliente en la fila. Hay "+filaClientes.size()+" clientes esperando");
+        System.out.println("\nNuevo cliente en la fila, quiere un "+cliente.getPedido());
+        System.out.println("Hay "+filaClientes.size()+" cliente(s) esperando");
     }
 
     public void addMascota(Mascotas mascota){
