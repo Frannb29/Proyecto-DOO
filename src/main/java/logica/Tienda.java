@@ -1,6 +1,8 @@
 package logica;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Tienda{
     private static Tienda instancia;
@@ -11,7 +13,7 @@ public class Tienda{
     private Deposito<Medicina> stockMedicinaMediana;
     private Deposito<Medicina> stockMedicinaGrande;
     private ArrayList<Mascotas> mascotas;
-    private ArrayList<Cliente> filaClientes;
+    private Queue<Cliente> filaClientes;
 
     private Tienda(){
         stockAlimentoPerro=new Deposito<Alimento>();
@@ -21,7 +23,7 @@ public class Tienda{
         stockMedicinaGrande=new Deposito<Medicina>();
 
         mascotas=new ArrayList<>();
-        filaClientes=new ArrayList<>();
+        filaClientes=new LinkedList<>();
     }
 
     public static Tienda getInstancia(){
@@ -98,7 +100,47 @@ public class Tienda{
         return null;
     }
 
-    public void addCliente(Cliente cliente){
-        filaClientes.add(cliente);
+    public void procesarVenta(Cliente cliente, Jugador jugador){
+        TipoMascota pedido=cliente.getPedido();
+        Mascotas mascotaAEntregar=null;
+
+        for(Mascotas m : mascotas){
+            if(m.getTipo()==pedido){
+                mascotaAEntregar=m;
+                break;
+            }
+        }
+
+        if(mascotaAEntregar!=null){
+            cliente.recibirMascota(mascotaAEntregar);
+            mascotas.remove(mascotaAEntregar);
+            jugador.setPresupuesto(jugador.getPresupuesto()+500); /*por ahora dejo un valor fijo, 
+            luego cuando le asignemos un precio a cada mascota se lo cambiamos*/
+            System.out.println("Mascota vendida");
+        }
+        else{
+            System.out.println("No esta la mascota solicitada en el inventario");
+        }
     }
+
+    public void atenderCliente(Jugador jugador){
+        if (filaClientes.isEmpty()){
+            System.out.println("La tienda esta tranquila. No hay clientes para atender");
+        }
+
+        Cliente clienteAtendido=filaClientes.poll();
+        System.out.println("Atendiendo al primer cliente de la fila...");
+        procesarVenta(clienteAtendido, jugador);
+        
+    }    
+
+    public void addCliente(Cliente cliente){
+        filaClientes.offer(cliente);
+        System.out.println("Nuevo cliente en la fila. Hay "+filaClientes.size()+" clientes esperando");
+    }
+
+    public void addMascota(Mascotas mascota){
+        mascotas.add(mascota);
+    }
+
 }

@@ -12,6 +12,7 @@ public class Perro extends Mascotas {
             this.felicidad -= 3;
             this.higiene -= 5;
             this.salud -= 2;
+            super.habitat.ensuciar(5);
         }
     }
 

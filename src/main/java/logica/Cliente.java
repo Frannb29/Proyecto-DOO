@@ -2,16 +2,16 @@ package logica;
 
 public class Cliente {
     private TipoMascota pedido;
-    private boolean fueVendido=false;
+    private boolean fueRecibido=false;
     private Mascotas mascotaVendida;
     
     public Cliente(TipoMascota pedido){
         this.pedido=pedido;
     }
 
-    public void venderMascota(Mascotas mascota){
+    public void recibirMascota(Mascotas mascota){
         this.mascotaVendida=mascota;
-        this.fueVendido=true;
+        this.fueRecibido=true;
     }
 
     public TipoMascota getPedido(){
@@ -22,7 +22,19 @@ public class Cliente {
         return mascotaVendida;
     }
 
-    public boolean isVendido(){
-        return fueVendido;
+    public boolean isRecibido(){
+        return fueRecibido;
+    }
+
+    public void setFueRecibido(boolean vendido){
+        this.fueRecibido=vendido;
+    }
+
+    public void setMascotaVendida(Mascotas mascota){
+        this.mascotaVendida=mascota;
+    }
+
+    public void setPedido(TipoMascota pedido){
+        this.pedido=pedido;
     }
 }
