@@ -126,6 +126,7 @@ public class Tienda{
     public void atenderCliente(Jugador jugador){
         if (filaClientes.isEmpty()){
             System.out.println("La tienda esta tranquila. No hay clientes para atender");
+            return;
         }
 
         Cliente clienteAtendido=filaClientes.poll();
