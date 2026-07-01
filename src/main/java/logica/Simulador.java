@@ -1,36 +1,30 @@
 package logica;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class Simulador {
+public class Simulador implements ObservadorReloj{
     private Jugador jugador;
     private Tienda tienda;
     private List<Mascotas> listaMascotas;
-    private Timer reloj;
     private int contadorSegundos;
+    private Reloj reloj;
 
     public Simulador(Jugador jugador, Tienda tienda){
         this.jugador = jugador;
         this.tienda = tienda;
         this.listaMascotas = new CopyOnWriteArrayList<>();//lista que evita errores con los threads
         this.contadorSegundos = 0;
-        this.reloj = new Timer();
+        reloj = new Reloj();
+        reloj.addObservador(this);
     }
 
-    public void iniciarSimulacion(){
-        TimerTask tarea = new TimerTask() {
-            @Override
-            public void run() {
-                contadorSegundos++;
-                if (contadorSegundos % 5 == 0){
-                    pasarTurno();
-                }
-            }
-        };
-        this.reloj.scheduleAtFixedRate(tarea, 0, 1000);
+    @Override
+    public void pasarTiempo(){
+        contadorSegundos++;
+        if(contadorSegundos % 5 == 0){
+            pasarTurno();
+        }
     }
     public void comprarMascota(TipoMascota tipo){
         Mascotas nuevaMascota = MascotaFactory.crearMascota(tipo);
@@ -41,8 +35,13 @@ public class Simulador {
             mascota.pasarTiempo();
         }
     }
+
+    public void iniciarSimulacion(){
+        reloj.iniciarReloj();
+    }
+
     public void detenerSimulacion(){
-        this.reloj.cancel();
+        reloj.detenerReloj();
     }
 
     public List<Mascotas> getListaMascotas() {
