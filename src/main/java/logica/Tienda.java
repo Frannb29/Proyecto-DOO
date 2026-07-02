@@ -112,12 +112,16 @@ public class Tienda{
         }
 
         if(mascotaAEntregar!=null){
-            cliente.recibirMascota(mascotaAEntregar);
-            mascotas.remove(mascotaAEntregar);
-            jugador.setPresupuesto(jugador.getPresupuesto()+500); /*por ahora dejo un valor fijo, 
-            luego cuando le asignemos un precio a cada mascota se lo cambiamos*/
-            System.out.println("Mascota vendida");
-            return mascotaAEntregar;
+            try{
+                venderMascota(jugador, mascotaAEntregar);
+                cliente.recibirMascota(mascotaAEntregar);
+                System.out.println("Mascota vendida");
+                return mascotaAEntregar;
+            }
+            catch (MascotaNoVendibleException e){
+                System.out.println("La mascota solicitada no cumple requisitos de venta");
+                return null;
+            }
         }
         else{
             System.out.println("No esta la mascota solicitada en el inventario");
@@ -135,7 +139,16 @@ public class Tienda{
         System.out.println("Atendiendo al primer cliente de la fila...");
         return procesarVenta(clienteAtendido, jugador);
         
-    }    
+    }
+
+    public void venderMascota(Jugador jugador, Mascotas mascota) throws MascotaNoVendibleException {
+        if(!mascota.sePuedeVender()){
+            throw new MascotaNoVendibleException();
+        }
+        int ganancias = jugador.getPresupuesto() + mascota.getPrecioVenta();
+        jugador.setPresupuesto(ganancias);
+        this.mascotas.remove(mascota);
+    }
 
     public void addCliente(Cliente cliente){
         filaClientes.offer(cliente);

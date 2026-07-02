@@ -17,7 +17,7 @@ public class Perro extends Mascotas {
     }
 
     public Perro(){
-        super(Habitat.CASA);
+        super(Habitat.CASA, 120);
     }
     @Override
     public void alimentar(Alimento alimento){

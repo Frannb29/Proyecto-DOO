@@ -30,8 +30,13 @@ public class Simulador{
         tienda.addMascota(mascota);
     }
 
-    public void comprarMascota(TipoMascota tipo){
+    public void comprarMascota(TipoMascota tipo)throws PagoInsuficienteException{
         Mascotas nuevaMascota = MascotaFactory.crearMascota(tipo);
+        if(jugador.getPresupuesto() < nuevaMascota.getPrecio()){
+            throw new PagoInsuficienteException();
+        }
+        int nuevoPresupuesto = jugador.getPresupuesto() - nuevaMascota.getPrecio();
+        jugador.setPresupuesto(nuevoPresupuesto);
         addMascotaAlSistema(nuevaMascota);
     }
     
