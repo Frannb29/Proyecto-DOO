@@ -1,51 +1,41 @@
 package logica;
 
 public class Gato extends Mascotas{
-    private int contadorTicks;
 
-    @Override
-    public void pasarTiempo(){
-        contadorTicks++;
-        if(contadorTicks>=5){
-            contadorTicks=0;
-            this.alimentacion -= 3;
-            this.felicidad -= 2;
-            this.higiene -= 2;
-            this.salud -= 3;
-            super.habitat.ensuciar(5);
-        }
-    }
     public Gato(){
         super(Habitat.CASA, 100);
     }
     @Override
     public void alimentar(Alimento alimento){
-        int recuperacion = alimento.getComida();
         if(alimento.getTipoMascota()==TipoMascota.GATO){
-            this.alimentacion += recuperacion;
-
-            if(alimentacion > 100){
-                alimentacion = 100;
-            }
+            this.setAlimentacion(this.getAlimentacion() + alimento.getComida());
         }
+        if (this.getAlimentacion() > 20 && this.getSalud() > 20) {
+            this.setEstado(new EstadoSano());
+        }
+    }
+    @Override
+    public int getDesgasteAlimentacion(){
+        return 2;
+    }
+    @Override
+    public int getDesgasteSalud(){
+        return 4;
+    }
+    @Override
+    public int getDesgasteHigiene(){
+        return 2;
+    }
+    @Override
+    public int getDesgasteFelicidad(){
+        return 3;
     }
     @Override
     public void sanar(Medicina medicina){
-        int recuperacion = medicina.getPuntosCuracion();
-        this.salud += recuperacion;
-
-        if(this.salud > 100){
-            this.salud = 100;
+        this.setSalud(this.getSalud() + medicina.getPuntosCuracion());
+        if (this.getAlimentacion() > 20 && this.getSalud() > 20) {
+            this.setEstado(new EstadoSano());
         }
-    }
-    @Override
-    public void limpiar(){
-        this.higiene=100;
-    }
-
-    @Override
-    public void jugar(){
-        this.felicidad=100;
     }
     @Override
     public TipoMascota getTipo(){
