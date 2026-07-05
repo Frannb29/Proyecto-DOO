@@ -38,14 +38,18 @@ public class PruebaLogica {
                         simulador.comprarMascota(TipoMascota.PERRO);
                     } catch (PagoInsuficienteException e) {
                         System.out.println("¡Error! No tienes suficiente dinero para comprar un perro");
+                    } catch (HabitatLlenoExcepcion e) {
+                        System.out.println(e.getMessage());
                     }
                     break;
                     
                 case "3":
                     try {
-                        simulador.comprarMascota(TipoMascota.PERRO);
+                        simulador.comprarMascota(TipoMascota.GATO);
                     } catch (PagoInsuficienteException e) {
                         System.out.println("¡Error! No tienes suficiente dinero para comprar un gato");
+                    } catch (HabitatLlenoExcepcion e) {
+                        System.out.println(e.getMessage());
                     }
                     break;
                     

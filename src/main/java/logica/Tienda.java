@@ -65,6 +65,19 @@ public class Tienda{
             }
         }
     }
+
+    public Mascotas comprarMascota(TipoMascota tipo, Jugador jugador)throws PagoInsuficienteException, HabitatLlenoExcepcion{
+        Mascotas nuevaMascota = MascotaFactory.crearMascota(tipo);
+        if(jugador.getPresupuesto() < nuevaMascota.getPrecio()){
+            throw new PagoInsuficienteException();
+        }
+        else if (contadorMascotas(nuevaMascota.getHabitat()) >= nuevaMascota.getHabitat().getCapacidad()){
+            throw new HabitatLlenoExcepcion(nuevaMascota.getHabitat().getNombre());
+        }
+        jugador.setPresupuesto(jugador.getPresupuesto() - nuevaMascota.getPrecio());
+        addMascota(nuevaMascota);
+        return nuevaMascota;
+    }
     public Suministros seleccionarSuministro(TipoSuministro tipo) throws DepositoVacioException{
         if(tipo==TipoSuministro.ALIMENTO_PERRO){
             if(stockAlimentoPerro.getSize()==0){
@@ -154,6 +167,15 @@ public class Tienda{
         System.out.println("Hay "+filaClientes.size()+" cliente(s) esperando");
     }
 
+    private int contadorMascotas(Habitat habitat){
+        int contador = 0;
+        for(Mascotas m :this.mascotas){
+            if(m.getHabitat() == habitat){
+                contador++;
+            }
+        }
+        return contador;
+    }
     public void addMascota(Mascotas mascota){
         mascotas.add(mascota);
     }

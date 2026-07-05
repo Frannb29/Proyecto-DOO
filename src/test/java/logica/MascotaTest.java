@@ -38,4 +38,5 @@ public class MascotaTest {
         assertEquals(95, perro.getHigiene());
         assertEquals(98, perro.getSalud());
     }
+
 }
