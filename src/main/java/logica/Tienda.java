@@ -41,8 +41,7 @@ public class Tienda{
             throw new PagoInsuficienteException();
         }
         else{
-            presupuesto-=valor;
-            jugador.setPresupuesto(presupuesto);
+            jugador.descontarPresupuesto(valor);
             if(objeto instanceof Alimento){
                 Alimento alimento=(Alimento) objeto;
                 if(alimento.getTipoMascota()==TipoMascota.PERRO){
@@ -145,8 +144,7 @@ public class Tienda{
         if(!mascota.sePuedeVender()){
             throw new MascotaNoVendibleException();
         }
-        int ganancias = jugador.getPresupuesto() + mascota.getPrecioVenta();
-        jugador.setPresupuesto(ganancias);
+        jugador.aumentarPresupuesto(mascota.getPrecioVenta());
         this.mascotas.remove(mascota);
     }
 
@@ -160,4 +158,19 @@ public class Tienda{
         mascotas.add(mascota);
     }
 
+    public int getCantidadAlimentoPerro() {
+        return stockAlimentoPerro.getSize();
+    }
+    public int getCantidadAlimentoGato() {
+        return stockAlimentoGato.getSize();
+    }
+    public int getCantidadMedicinaPequeña() {
+        return stockMedicinaPequeña.getSize();
+    }
+    public int getCantidadMedicinaMediana() {
+        return stockMedicinaMediana.getSize();
+    }
+    public int getCantidadMedicinaGrande() {
+        return stockMedicinaGrande.getSize();
+    }
 }

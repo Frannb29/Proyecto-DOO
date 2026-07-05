@@ -35,8 +35,7 @@ public class Simulador{
         if(jugador.getPresupuesto() < nuevaMascota.getPrecio()){
             throw new PagoInsuficienteException();
         }
-        int nuevoPresupuesto = jugador.getPresupuesto() - nuevaMascota.getPrecio();
-        jugador.setPresupuesto(nuevoPresupuesto);
+        jugador.descontarPresupuesto(nuevaMascota.getPrecio());
         addMascotaAlSistema(nuevaMascota);
     }
     

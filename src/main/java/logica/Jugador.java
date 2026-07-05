@@ -11,4 +11,10 @@ public class Jugador{
     public void setPresupuesto(int nuevoPresupuesto){
         presupuesto=nuevoPresupuesto;
     }
+    public void descontarPresupuesto(int cantidad){
+        presupuesto-=cantidad;
+    }
+    public void aumentarPresupuesto(int cantidad){
+        presupuesto+=cantidad;
+    }
 }
