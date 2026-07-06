@@ -71,6 +71,7 @@ public abstract class Mascotas implements ObservadorReloj {
         return (int)(this.precio * 1.5);
     }
     public void pasarTiempo(){
+        this.contadorTicks++;
         if(contadorTicks >= 5){
             this.contadorTicks = 0;
             estadoActual.procesarTick(this);

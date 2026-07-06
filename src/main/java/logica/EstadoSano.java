@@ -5,6 +5,8 @@ public class EstadoSano implements EstadoMascota{
     public void procesarTick(Mascotas mascota){
         mascota.setSalud(mascota.getSalud()-mascota.getDesgasteSalud());
         mascota.setAlimentacion(mascota.getAlimentacion()-mascota.getDesgasteAlimentacion());
+        mascota.setHigiene(mascota.getHigiene()-mascota.getDesgasteHigiene());
+        mascota.setFelicidad(mascota.getFelicidad()-mascota.getDesgasteFelicidad());
 
         if(mascota.getSalud() <= 0){
             mascota.setSalud(0);

@@ -2,55 +2,111 @@ package GUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
-import logica.Habitat;
+import java.util.ArrayList;
+
+import logica.*;
 
 public class VentanaHabitats extends JFrame{
+
+    private ArrayList<Habitat> habitatsComprados = new ArrayList<>();
+    private ArrayList<PanelHabitat> panelesHabitats = new ArrayList<>();
     private JTabbedPane pestañasHabitats;
-    public VentanaHabitats(){
+    private Jugador jugador;
+    public VentanaHabitats(Jugador jugador){
+        int tiempoTick = 1000;
+        this.jugador = jugador;
         setTitle("Tienda de Mascotas");
         setSize(1024, 768);
-        setResizable(false);
+        setResizable(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         setLayout(new BorderLayout());
         pestañasHabitats = new JTabbedPane();
 
-        for(Habitat habitat : Habitat.values()){
-            PanelHabitat panelIndividual = new PanelHabitat(habitat.getRuta());
-            pestañasHabitats.addTab(habitat.name(), panelIndividual);
+        Timer loopJuego = new Timer(tiempoTick, e -> {
+            for (Mascotas m : Tienda.getInstancia().getMascotas()){
+                m.pasarTiempo();
+            }
+            PanelHabitat habitatActivo = (PanelHabitat) pestañasHabitats.getSelectedComponent();
+            if (habitatActivo != null) {
+                habitatActivo.actualizarBarrasMascotas();
+            }
+        });
+        loopJuego.start();
+
+        Habitat[] totalHabitats = Habitat.values();
+        if(totalHabitats.length > 0){
+            desbloquearHabitat(totalHabitats[0]);
         }
         add(pestañasHabitats, BorderLayout.CENTER);
+
         JPanel panelTienda = new JPanel();
         panelTienda.setBackground(Color.LIGHT_GRAY);
         panelTienda.setPreferredSize(new Dimension(1024, 100));
 
         JButton botonComprar = new JButton("Comprar Mascota");
         JButton botonVender = new JButton("Vender Mascotaa");
+        JButton botonComprarHabitat = new JButton("Comprar Habitat");
         panelTienda.add(botonComprar);
         panelTienda.add(botonVender);
+        panelTienda.add(botonComprarHabitat);
         add(panelTienda, BorderLayout.SOUTH);
         botonComprar.addActionListener(e -> comprarMascotaHabitat());
         botonVender.addActionListener(e -> venderMascotaHabitat());
+        botonComprarHabitat.addActionListener(e -> compraHabitat());
+    }
+    private void desbloquearHabitat(Habitat habitat){
+        habitatsComprados.add(habitat);
+        PanelHabitat panelIndividual = new PanelHabitat(habitat.getRuta());
+        panelesHabitats.add(panelIndividual);
+        pestañasHabitats.addTab(habitat.name(), panelIndividual);
+
+    }
+    private void compraHabitat(){
+        Habitat[] totalHabitats = Habitat.values();
+        if (habitatsComprados.size() >= totalHabitats.length) {
+            JOptionPane.showMessageDialog(this, "¡Ya has comprado todos los habitats disponibles!");
+            return;
+        }
+        Habitat siguienteHabitat = totalHabitats[habitatsComprados.size()];
+        try {
+            Tienda.getInstancia().comprarHabitat(siguienteHabitat, this.jugador);
+            desbloquearHabitat(siguienteHabitat);
+            JOptionPane.showMessageDialog(this, "¡Habitat comprado!");
+        }
+        catch (PagoInsuficienteException e){
+            JOptionPane.showMessageDialog(this, "Pago insuficiente");
+        }
     }
     private void comprarMascotaHabitat() {
         PanelHabitat habitatActivo = (PanelHabitat) pestañasHabitats.getSelectedComponent();
 
-        if (habitatActivo != null){
+        if (habitatActivo != null) {
             int index = pestañasHabitats.getSelectedIndex();
             String nombrePestaña = pestañasHabitats.getTitleAt(index);
 
+            TipoMascota tipo = TipoMascota.PERRO;
             String rutaMascota = "/Imagenes/perro.png";
-            if (nombrePestaña.equals("ACUATICO")){
-                rutaMascota = "/Imagenes/pez.png";
-            } else if (nombrePestaña.equals("POKECASA")){
+            if (nombrePestaña.equals("ACUATICO")) {
+                tipo = TipoMascota.PEZ;
+                rutaMascota = "/Imagenes/pez_dorado.png";
+            } else if (nombrePestaña.equals("POKECASA")) {
+                tipo = TipoMascota.POKEMON;
                 rutaMascota = "/Imagenes/Bulbasaur.png";
             }
 
-            boolean venta = habitatActivo.dibujarMascota(rutaMascota);
-
-            if (!venta){
+            try {
+                Mascotas nuevaMascota = Tienda.getInstancia().comprarMascota(tipo, this.jugador);
+                boolean compraExitosa = habitatActivo.dibujarMascota(rutaMascota, nuevaMascota);
+                if (!compraExitosa) {
+                    JOptionPane.showMessageDialog(this, "Error visual al renderizar la mascota");
+                } else {
+                    pestañasHabitats.repaint();
+                }
+            } catch (PagoInsuficienteException e) {
+                JOptionPane.showMessageDialog(this, "No tienes dinero suficiente para comprar esta mascota");
+            } catch (HabitatLlenoExcepcion e) {
                 JOptionPane.showMessageDialog(this, "El habitat " + nombrePestaña + " está lleno");
             }
         }
@@ -58,14 +114,9 @@ public class VentanaHabitats extends JFrame{
     public void venderMascotaHabitat(){
         PanelHabitat habitatActivo = (PanelHabitat) pestañasHabitats.getSelectedComponent();
         if(habitatActivo != null){
-            Component mascotaVendida = null;
-            for(int i = habitatActivo.espaciosOcupados.length - 1; i >= 0; i--){
-                if (habitatActivo.espaciosOcupados[i] != null) {
-                    mascotaVendida = habitatActivo.espaciosOcupados[i];
-                    break;
-                }
-            }
-            if(mascotaVendida != null){
+            ArrayList<JPanel> listaMascotas = habitatActivo.getEspaciosOcupados();
+            if(!listaMascotas.isEmpty()){
+                JPanel mascotaVendida = listaMascotas.get(listaMascotas.size() - 1);
                 habitatActivo.removerMascota(mascotaVendida);
             } else {
                 JOptionPane.showMessageDialog(this, "No tienes mascotas en este habitat para vender");
@@ -74,7 +125,8 @@ public class VentanaHabitats extends JFrame{
     }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            new VentanaHabitats().setVisible(true);
+            Jugador jugador = new Jugador();
+            new VentanaHabitats(jugador).setVisible(true);
         });
     }
 }

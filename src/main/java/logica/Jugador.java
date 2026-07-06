@@ -3,7 +3,7 @@ package logica;
 public class Jugador{
     private int presupuesto;
     public Jugador(){
-        presupuesto=500;
+        presupuesto=1000;
     }
     public int getPresupuesto(){
         return presupuesto;

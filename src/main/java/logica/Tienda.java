@@ -161,6 +161,17 @@ public class Tienda{
         this.mascotas.remove(mascota);
     }
 
+    public void comprarHabitat(Habitat habitat, Jugador jugador)throws PagoInsuficienteException{
+        int costo = habitat.getPrecio();
+        if(costo > jugador.getPresupuesto()){
+            throw new PagoInsuficienteException();
+        }
+        else{
+            jugador.descontarPresupuesto(costo);
+            System.out.println("Habitat " + habitat.getNombre() + " comprado con exito");
+        }
+    }
+
     public void addCliente(Cliente cliente){
         filaClientes.offer(cliente);
         System.out.println("\nNuevo cliente en la fila, quiere un "+cliente.getPedido());
@@ -194,5 +205,8 @@ public class Tienda{
     }
     public int getCantidadMedicinaGrande() {
         return stockMedicinaGrande.getSize();
+    }
+    public ArrayList<Mascotas> getMascotas(){
+        return mascotas;
     }
 }
