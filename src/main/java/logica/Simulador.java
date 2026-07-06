@@ -15,6 +15,8 @@ public class Simulador{
         reloj.addObservador(generaClientes);
         addMascotaAlSistema(MascotaFactory.crearMascota(TipoMascota.PERRO));
         addMascotaAlSistema(MascotaFactory.crearMascota(TipoMascota.GATO));
+        addMascotaAlSistema(MascotaFactory.crearMascota(TipoMascota.CONEJO));
+        addMascotaAlSistema(MascotaFactory.crearMascota(TipoMascota.HAMSTER));
     }
 
     public void iniciarSimulacion(){
@@ -40,5 +42,9 @@ public class Simulador{
         if(mascotaVendida!=null){
             reloj.removeObservador(mascotaVendida);
         }
+    }
+
+    public Reloj getReloj(){
+        return reloj;
     }
 }

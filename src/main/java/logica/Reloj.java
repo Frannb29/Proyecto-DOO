@@ -9,9 +9,11 @@ import java.util.concurrent.TimeUnit;
 public class Reloj {
     private List<ObservadorReloj> observadores;
     private ScheduledExecutorService programador;
+    private int segundosTranscurridos;
 
     public Reloj(){
         observadores=new CopyOnWriteArrayList<>();
+        segundosTranscurridos=0;
     }
 
     public void addObservador(ObservadorReloj observador){
@@ -36,6 +38,7 @@ public class Reloj {
 
         Runnable ticksReloj=() -> {
             notificarObservadores();
+            segundosTranscurridos++;
         };
 
         //por cada unidad(en este caso 1 seg.) se ejecuta lo que tiene dentro ticksReloj
@@ -52,4 +55,8 @@ public class Reloj {
         return observadores;
     }
 
+    public int getSegundosTranscurridos(){
+        return segundosTranscurridos;
+    }
+    
 }

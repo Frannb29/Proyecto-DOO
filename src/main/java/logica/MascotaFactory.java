@@ -10,6 +10,10 @@ public class MascotaFactory {
                 return new Perro();
             case GATO:
                 return new Gato();
+            case CONEJO:
+                return new Conejo();
+            case HAMSTER:
+                return new Hamster();
             default:
                 throw new IllegalArgumentException("Tipo de mascota desconocido: " + tipo);
         }

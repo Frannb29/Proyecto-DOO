@@ -209,4 +209,7 @@ public class Tienda{
     public ArrayList<Mascotas> getMascotas(){
         return mascotas;
     }
+    public Queue<Cliente> getFilaClientes() {
+        return filaClientes;
+    }
 }

@@ -13,7 +13,7 @@ public class TiendaTest{
     }
     @Test
     public void testComprarSuministros(){
-        Suministros alimento=new Alimento(40, TipoMascota.PERRO);
+        Suministros alimento=new Alimento(TipoSuministro.ALIMENTO_PERRO);
         int presupuestoInicial=jugador.getPresupuesto();
         try{
             tienda.comprarSuministros(jugador,alimento);
@@ -26,7 +26,7 @@ public class TiendaTest{
     @Test
     public void testComprarConPresupuestoInsuficiente(){
         jugador.setPresupuesto(10);
-        Suministros medicina=new Medicina(150,100);
+        Suministros medicina=new Medicina(TipoSuministro.MEDICINA_GRANDE);
         int presupuestoInicial=jugador.getPresupuesto();
         assertThrows(PagoInsuficienteException.class, ()->{tienda.comprarSuministros(jugador,medicina);});
     }
