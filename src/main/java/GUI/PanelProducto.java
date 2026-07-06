@@ -39,19 +39,19 @@ public class PanelProducto extends JPanel {
                 try{
                     Suministros s=null;
                     if(tipo==TipoSuministro.ALIMENTO_PERRO){
-                        s=new Alimento(tipo.getPrecio(), TipoMascota.PERRO);
+                        s=new Alimento(tipo);
                     }
                     else if(tipo==TipoSuministro.ALIMENTO_GATO){
-                        s=new Alimento(tipo.getPrecio(), TipoMascota.GATO);
+                        s=new Alimento(tipo);
                     }
                     else if(tipo==TipoSuministro.MEDICINA_PEQUEÑA){
-                        s=new Medicina(tipo.getPrecio(),25);
+                        s=new Medicina(tipo);
                     }
                     else if(tipo==TipoSuministro.MEDICINA_MEDIANA){
-                        s=new Medicina(tipo.getPrecio(),50);
+                        s=new Medicina(tipo);
                     }
                     else{
-                        s=new Medicina(tipo.getPrecio(),100);
+                        s=new Medicina(tipo);
                     }
                     Tienda.getInstancia().comprarSuministros(jugador,s);
                     labelDinero.setText("$ "+jugador.getPresupuesto());

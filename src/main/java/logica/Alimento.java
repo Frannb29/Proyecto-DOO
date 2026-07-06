@@ -3,10 +3,20 @@ package logica;
 public class Alimento extends Suministros{
     private TipoMascota mascotaDestino;
     private int comida;
-    public Alimento(int valor, TipoMascota mascotaDestino){
-        super(valor);
-        this.mascotaDestino=mascotaDestino;
-        comida=80;
+
+    public Alimento(TipoSuministro tipo){
+        super(tipo);
+        this.comida=80;
+        
+        switch (tipo) {
+            case ALIMENTO_PERRO:
+                this.mascotaDestino=TipoMascota.PERRO;
+                break;
+            case ALIMENTO_GATO:
+                this.mascotaDestino=TipoMascota.GATO;
+            default:
+                break;
+        }
     }
     public TipoMascota getTipoMascota(){
         return mascotaDestino;

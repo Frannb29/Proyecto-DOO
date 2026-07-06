@@ -53,13 +53,13 @@ public class Tienda{
             }
             else if(objeto instanceof Medicina){
                 Medicina medicina=(Medicina) objeto;
-                if(medicina.getPuntosCuracion()==25){
+                if(medicina.getTipo()==TipoSuministro.MEDICINA_PEQUEÑA){
                     stockMedicinaPequeña.add(medicina);
                 }
-                else if(medicina.getPuntosCuracion()==50){
+                else if(medicina.getTipo()==TipoSuministro.MEDICINA_MEDIANA){
                     stockMedicinaMediana.add(medicina);
                 }
-                else if(medicina.getPuntosCuracion()==100){
+                else if(medicina.getTipo()==TipoSuministro.MEDICINA_GRANDE){
                     stockMedicinaGrande.add(medicina);
                 }
             }

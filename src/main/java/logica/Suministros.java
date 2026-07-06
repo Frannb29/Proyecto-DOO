@@ -1,12 +1,18 @@
 package logica;
 
 public abstract class Suministros{
-    private int valor;
-    protected Suministros(int valor){
-        this.valor=valor;
+    protected TipoSuministro tipo;
+
+    protected Suministros(TipoSuministro tipo){
+        this.tipo=tipo;
     }
+    
+    public TipoSuministro getTipo(){
+        return tipo;
+    }
+    
     public int getValor(){
-        return valor;
+        return tipo.getPrecio();
     }
     public abstract void usar(Mascotas mascota);
 }
