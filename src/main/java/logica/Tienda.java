@@ -9,6 +9,8 @@ public class Tienda{
 
     private Deposito<Alimento> stockAlimentoPerro;
     private Deposito<Alimento> stockAlimentoGato;
+    private Deposito<Alimento> stockAlimentoConejo;
+    private Deposito<Alimento> stockAlimentoHamster;
     private Deposito<Medicina> stockMedicinaPequeña;
     private Deposito<Medicina> stockMedicinaMediana;
     private Deposito<Medicina> stockMedicinaGrande;
@@ -18,6 +20,8 @@ public class Tienda{
     private Tienda(){
         stockAlimentoPerro=new Deposito<Alimento>();
         stockAlimentoGato=new Deposito<Alimento>();
+        stockAlimentoConejo=new Deposito<Alimento>();
+        stockAlimentoHamster=new Deposito<Alimento>();
         stockMedicinaPequeña=new Deposito<Medicina>();
         stockMedicinaMediana=new Deposito<Medicina>();
         stockMedicinaGrande=new Deposito<Medicina>();
@@ -50,6 +54,12 @@ public class Tienda{
                 else if(alimento.getTipoMascota()==TipoMascota.GATO){
                     stockAlimentoGato.add(alimento);
                 }
+                else if(alimento.getTipoMascota()==TipoMascota.CONEJO){
+                    stockAlimentoConejo.add(alimento);
+                }
+                else if(alimento.getTipoMascota()==TipoMascota.HAMSTER){
+                    stockAlimentoHamster.add(alimento);
+                }
             }
             else if(objeto instanceof Medicina){
                 Medicina medicina=(Medicina) objeto;
@@ -74,7 +84,7 @@ public class Tienda{
         else if (contadorMascotas(nuevaMascota.getHabitat()) >= nuevaMascota.getHabitat().getCapacidad()){
             throw new HabitatLlenoExcepcion(nuevaMascota.getHabitat().getNombre());
         }
-        jugador.setPresupuesto(jugador.getPresupuesto() - nuevaMascota.getPrecio());
+        jugador.descontarPresupuesto(nuevaMascota.getPrecio());
         addMascota(nuevaMascota);
         return nuevaMascota;
     }
@@ -90,6 +100,18 @@ public class Tienda{
                 throw new DepositoVacioException("comida de gato");
             }
             return stockAlimentoGato.get();
+        }
+        else if(tipo==TipoSuministro.ALIMENTO_CONEJO){
+            if(stockAlimentoConejo.getSize()==0){
+                throw new DepositoVacioException("comida de gato");
+            }
+            return stockAlimentoConejo.get();
+        }
+        else if(tipo==TipoSuministro.ALIMENTO_HAMSTER){
+            if(stockAlimentoHamster.getSize()==0){
+                throw new DepositoVacioException("comida de gato");
+            }
+            return stockAlimentoHamster.get();
         }
         else if(tipo==TipoSuministro.MEDICINA_PEQUEÑA){
             if(stockMedicinaPequeña.getSize()==0){
@@ -196,6 +218,12 @@ public class Tienda{
     }
     public int getCantidadAlimentoGato() {
         return stockAlimentoGato.getSize();
+    }
+    public int getCantidadAlimentoConejo() {
+        return stockAlimentoConejo.getSize();
+    }
+    public int getCantidadAlimentoHamster() {
+        return stockAlimentoHamster.getSize();
     }
     public int getCantidadMedicinaPequeña() {
         return stockMedicinaPequeña.getSize();

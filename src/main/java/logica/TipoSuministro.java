@@ -3,6 +3,8 @@ package logica;
 public enum TipoSuministro{
     ALIMENTO_PERRO(40),
     ALIMENTO_GATO(55),
+    ALIMENTO_CONEJO(45),
+    ALIMENTO_HAMSTER(30),
     MEDICINA_PEQUEÑA(50),
     MEDICINA_MEDIANA(90),
     MEDICINA_GRANDE(150);

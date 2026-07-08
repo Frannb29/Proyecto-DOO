@@ -14,6 +14,13 @@ public class Alimento extends Suministros{
                 break;
             case ALIMENTO_GATO:
                 this.mascotaDestino=TipoMascota.GATO;
+                break;
+            case ALIMENTO_CONEJO:
+                this.mascotaDestino=TipoMascota.CONEJO;
+                break;
+            case ALIMENTO_HAMSTER:
+                this.mascotaDestino=TipoMascota.HAMSTER;
+                break;
             default:
                 break;
         }
