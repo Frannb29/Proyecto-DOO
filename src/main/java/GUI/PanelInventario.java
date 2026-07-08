@@ -17,7 +17,7 @@ public class PanelInventario extends JPanel {
         this.setBackground(new Color(60,60,60));
         botonAlimentoPerro=crearBoton("/Imagenes/ALIMENTO_PERRO.png");
         botonAlimentoGato=crearBoton("/Imagenes/ALIMENTO_GATO.png");
-        botonAlimentoConejo=crearBoton("/Imagenes/ALIMENTO_Conejo.png");
+        botonAlimentoConejo=crearBoton("/Imagenes/ALIMENTO_CONEJO.png");
         botonAlimentoHamster=crearBoton("/Imagenes/ALIMENTO_HAMSTER.png");
         botonMedicinaPequeña=crearBoton("/Imagenes/MEDICINA_PEQUEÑA.png");
         botonMedicinaMediana=crearBoton("/Imagenes/MEDICINA_MEDIANA.png");

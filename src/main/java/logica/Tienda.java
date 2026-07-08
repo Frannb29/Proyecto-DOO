@@ -103,13 +103,13 @@ public class Tienda{
         }
         else if(tipo==TipoSuministro.ALIMENTO_CONEJO){
             if(stockAlimentoConejo.getSize()==0){
-                throw new DepositoVacioException("comida de gato");
+                throw new DepositoVacioException("comida de conejo");
             }
             return stockAlimentoConejo.get();
         }
         else if(tipo==TipoSuministro.ALIMENTO_HAMSTER){
             if(stockAlimentoHamster.getSize()==0){
-                throw new DepositoVacioException("comida de gato");
+                throw new DepositoVacioException("comida de hamster");
             }
             return stockAlimentoHamster.get();
         }

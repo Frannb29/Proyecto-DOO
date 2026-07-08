@@ -38,17 +38,8 @@ public class PanelProducto extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 try{
                     Suministros s=null;
-                    if(tipo==TipoSuministro.ALIMENTO_PERRO){
+                    if (tipo==TipoSuministro.ALIMENTO_PERRO || tipo==TipoSuministro.ALIMENTO_GATO || tipo==TipoSuministro.ALIMENTO_CONEJO || tipo==TipoSuministro.ALIMENTO_HAMSTER){
                         s=new Alimento(tipo);
-                    }
-                    else if(tipo==TipoSuministro.ALIMENTO_GATO){
-                        s=new Alimento(tipo);
-                    }
-                    else if(tipo==TipoSuministro.MEDICINA_PEQUEÑA){
-                        s=new Medicina(tipo);
-                    }
-                    else if(tipo==TipoSuministro.MEDICINA_MEDIANA){
-                        s=new Medicina(tipo);
                     }
                     else{
                         s=new Medicina(tipo);
