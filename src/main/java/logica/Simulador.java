@@ -28,9 +28,10 @@ public class Simulador{
         tienda.addMascota(mascota);
     }
 
-    public void comprarMascota(TipoMascota tipo) throws PagoInsuficienteException, HabitatLlenoExcepcion, HabitatBloqueadoException{
+    public Mascotas comprarMascota(TipoMascota tipo) throws PagoInsuficienteException, HabitatLlenoExcepcion, HabitatBloqueadoException{
         Mascotas nuevaMascota = tienda.comprarMascota(tipo, jugador);
         reloj.addObservador(nuevaMascota);
+        return nuevaMascota;
     }
     public void venderMascotaACliente(){
         Mascotas mascotaVendida=tienda.atenderCliente(jugador);

@@ -15,11 +15,13 @@ public class VentanaPrincipal extends JFrame {
     private JTabbedPane menuPestañas;
     private PanelClientes panelClientes;
     private PanelInventario panelInventario;
+    private VentanaHabitats ventanaHabitats;
 
     public VentanaPrincipal() {
         jugador = new Jugador();
         simulador = new Simulador(jugador);
         reloj = simulador.getReloj();
+        simulador.iniciarSimulacion();
 
         setTitle("Simulador de Tienda de Mascotas");
         setSize(1024, 768);
@@ -36,7 +38,8 @@ public class VentanaPrincipal extends JFrame {
         panelInventario = new PanelInventario();
         add(panelInventario, BorderLayout.SOUTH);
 
-        menuPestañas.addTab("Mis Hábitats", new VentanaHabitats(jugador));
+        ventanaHabitats = new VentanaHabitats(jugador, simulador);
+        menuPestañas.addTab("Mis Hábitats", ventanaHabitats);
         
         add(menuPestañas, BorderLayout.CENTER);
 
@@ -53,6 +56,7 @@ public class VentanaPrincipal extends JFrame {
                 topBar.actualizarDatos(jugador, reloj);
                 panelClientes.actualizarLista();
                 panelInventario.actualizarCantidades();
+                ventanaHabitats.actualizarHabitat();
                 repaint(); 
             }
         });

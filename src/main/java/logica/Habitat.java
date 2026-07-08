@@ -15,6 +15,7 @@ public enum Habitat {
         this.capacidad = capacidad;
         this.precio = precio;
         this.ruta = ruta;
+        this.nombre = nombre;
     }
     public String getNombre(){
         return nombre;

@@ -12,23 +12,14 @@ public class VentanaHabitats extends JPanel{
     private ArrayList<PanelHabitat> panelesHabitats = new ArrayList<>();
     private JTabbedPane pestañasHabitats;
     private Jugador jugador;
-    public VentanaHabitats(Jugador jugador){
+    private Simulador simulador;
+    public VentanaHabitats(Jugador jugador, Simulador simulador){
         int tiempoTick = 1000;
         this.jugador = jugador;
+        this.simulador = simulador;
 
         setLayout(new BorderLayout());
         pestañasHabitats = new JTabbedPane();
-
-        Timer loopJuego = new Timer(tiempoTick, e -> {
-            for (Mascotas m : Tienda.getInstancia().getMascotas()){
-                m.pasarTiempo();
-            }
-            PanelHabitat habitatActivo = (PanelHabitat) pestañasHabitats.getSelectedComponent();
-            if (habitatActivo != null) {
-                habitatActivo.actualizarBarrasMascotas();
-            }
-        });
-        loopJuego.start();
 
         Habitat[] totalHabitats = Habitat.values();
         if(totalHabitats.length > 0){
@@ -53,7 +44,7 @@ public class VentanaHabitats extends JPanel{
     }
     private void desbloquearHabitat(Habitat habitat){
         habitatsComprados.add(habitat);
-        PanelHabitat panelIndividual = new PanelHabitat(habitat.getRuta());
+        PanelHabitat panelIndividual = new PanelHabitat(habitat);
         panelesHabitats.add(panelIndividual);
         pestañasHabitats.addTab(habitat.name(), panelIndividual);
 
@@ -153,7 +144,7 @@ public class VentanaHabitats extends JPanel{
                 case PULPO: rutaMascota="/Imagenes/pulpo.png"; break;
             }
             try {
-                Mascotas nuevaMascota = Tienda.getInstancia().comprarMascota(elegido, this.jugador);
+                Mascotas nuevaMascota = simulador.comprarMascota(elegido);
                 boolean compraExitosa = habitatActivo.dibujarMascota(rutaMascota, nuevaMascota);
                 if (!compraExitosa) {
                     JOptionPane.showMessageDialog(this, "Error visual al renderizar la mascota");
@@ -184,16 +175,9 @@ public class VentanaHabitats extends JPanel{
             }
         }
     }
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            Jugador jugador = new Jugador();
-            JFrame ventanaPrincipal = new JFrame("Tienda de Mascotas");
-            ventanaPrincipal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            ventanaPrincipal.setSize(1024, 768);
-            ventanaPrincipal.setLocationRelativeTo(null);
-            VentanaHabitats panelJuego = new VentanaHabitats(jugador);
-            ventanaPrincipal.add(panelJuego);
-            ventanaPrincipal.setVisible(true);
-        });
+    public void actualizarHabitat() {
+        for(PanelHabitat panel : panelesHabitats){
+            panel.actualizarBarras();
+        }
     }
 }

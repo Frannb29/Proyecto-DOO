@@ -12,10 +12,36 @@ public class PanelHabitat extends JPanel{
     private Image imagenFondo;
     private JPanel panelMascotas;
     private ArrayList<JPanel> espaciosOcupados = new ArrayList<>();
+    private JProgressBar barraHigieneHabitat;
+    private Habitat habitat;
 
-    public PanelHabitat (String ruta){
-
+    public PanelHabitat (Habitat habitat){
+        this.habitat = habitat;
+        String ruta = habitat.getRuta();
         setLayout(new BorderLayout());
+
+        JPanel panelLimpieza = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 5));
+        panelLimpieza.setBackground(new Color(230, 240, 250));
+        JLabel txtHigieneGlobal = new JLabel("Higiene del Habitat: ");
+        txtHigieneGlobal.setFont(new Font("Arial", Font.BOLD, 12));
+
+        barraHigieneHabitat = new JProgressBar(0, 100);
+        barraHigieneHabitat.setValue(habitat.getHigiene());
+        barraHigieneHabitat.setForeground(new Color(0, 180, 216));
+        barraHigieneHabitat.setStringPainted(true);
+
+        JButton botonLimpiarHabitat = new JButton("Limpiar Habitat");
+        botonLimpiarHabitat.setFont(new Font("Arial", Font.BOLD, 11));
+        botonLimpiarHabitat.addActionListener(e -> {
+            this.habitat.limpiarHabitat();
+            barraHigieneHabitat.setValue(100);
+            JOptionPane.showMessageDialog(this, "El habitat " + habitat.getNombre() + " ha sido limpiado");
+        });
+        panelLimpieza.add(txtHigieneGlobal);
+        panelLimpieza.add(barraHigieneHabitat);
+        panelLimpieza.add(botonLimpiarHabitat);
+        add(panelLimpieza, BorderLayout.NORTH);
+
         panelMascotas = new JPanel(new GridBagLayout());
         panelMascotas.setOpaque(false);
         add(panelMascotas, BorderLayout.CENTER);
@@ -113,6 +139,17 @@ public class PanelHabitat extends JPanel{
         contenedorMascota.setLayout(new BoxLayout(contenedorMascota, BoxLayout.Y_AXIS));
         contenedorMascota.setOpaque(false);
 
+        JPanel panelBotones = new JPanel(new GridLayout(2,2,4,4));
+        panelBotones.setOpaque(false);
+        for(accionMascota accion : accionMascota.values()){
+            JButton boton = new JButton(accion.getNombre());
+            boton.setFont(new Font("Arial", Font.PLAIN, 10));
+            boton.addActionListener(e -> ejecutarAccion(accion, mascota));
+            panelBotones.add(boton);
+        }
+        contenedorMascota.add(panelBotones);
+        contenedorMascota.add(Box.createVerticalStrut(10));
+
         contenedorMascota.add(txtAlimento);
         contenedorMascota.add(barraAlimento);
         contenedorMascota.add(Box.createVerticalStrut(4));
@@ -128,6 +165,8 @@ public class PanelHabitat extends JPanel{
         contenedorMascota.add(txtHigiene);
         contenedorMascota.add(barraHigiene);
 
+        contenedorMascota.add(Box.createVerticalGlue());
+
         labelMascota.setAlignmentX(Component.CENTER_ALIGNMENT);
         contenedorMascota.add(labelMascota);
         contenedorMascota.add(Box.createVerticalStrut(8));
@@ -138,15 +177,6 @@ public class PanelHabitat extends JPanel{
         contenedorMascota.putClientProperty("barraSalud", barraSalud);
         contenedorMascota.putClientProperty("barraHigiene", barraHigiene);
 
-        JPanel panelBotones = new JPanel(new GridLayout(2,2,4,4));
-
-        for(accionMascota accion : accionMascota.values()){
-            JButton boton = new JButton(accion.getNombre());
-            boton.setFont(new Font("Arial", Font.PLAIN, 10));
-            boton.addActionListener(e -> ejecutarAccion(accion, mascota));
-            panelBotones.add(boton);
-        }
-        contenedorMascota.add(panelBotones);
         contenedorMascota.setPreferredSize(new Dimension(130, 340));
 
         GridBagConstraints c = new GridBagConstraints();
@@ -190,7 +220,7 @@ public class PanelHabitat extends JPanel{
                     JOptionPane.showMessageDialog(this, "Jugaste con la mascota, su felicidad aumentó");
                     break;
             }
-            actualizarBarrasMascotas();
+            actualizarBarras();
         }
         catch (DepositoVacioException e){
             JOptionPane.showMessageDialog(this, "No quedan suministros de ese tipo en el inventario");
@@ -199,7 +229,10 @@ public class PanelHabitat extends JPanel{
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }
-    public void actualizarBarrasMascotas(){
+    public void actualizarBarras(){
+        if(habitat != null && barraHigieneHabitat != null){
+            barraHigieneHabitat.setValue(habitat.getHigiene());
+        }
         for (JPanel contenedor : espaciosOcupados) {
             Mascotas mLogica = (Mascotas) contenedor.getClientProperty("mascota");
             JProgressBar bAlimento = (JProgressBar) contenedor.getClientProperty("barraAlimento");
@@ -253,7 +286,7 @@ public class PanelHabitat extends JPanel{
             frame.setLocationRelativeTo(null);
             frame.setResizable(false);
 
-            PanelHabitat habitat = new PanelHabitat("/Imagenes/Fondo_Casa.png");
+            PanelHabitat habitat = new PanelHabitat(Habitat.CASA);
             JPanel panelControl = new JPanel();
             JButton botonComprar = new JButton("Comprar Mascota");
             JButton botonVender = new JButton("Vender Mascota");
