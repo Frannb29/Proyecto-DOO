@@ -13,10 +13,6 @@ public class Simulador{
         generaClientes=new GeneradorCliente();
 
         reloj.addObservador(generaClientes);
-        addMascotaAlSistema(MascotaFactory.crearMascota(TipoMascota.PERRO));
-        addMascotaAlSistema(MascotaFactory.crearMascota(TipoMascota.GATO));
-        addMascotaAlSistema(MascotaFactory.crearMascota(TipoMascota.CONEJO));
-        addMascotaAlSistema(MascotaFactory.crearMascota(TipoMascota.HAMSTER));
     }
 
     public void iniciarSimulacion(){

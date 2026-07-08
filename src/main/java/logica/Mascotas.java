@@ -89,5 +89,9 @@ public abstract class Mascotas implements ObservadorReloj {
     public void jugar() throws EstadoMascotaInvalidoException{
         estadoActual.jugar(this);
     }
+    @Override
+    public String toString() {
+        return this.getTipo()+"(Salud: "+this.salud+", Alimento: "+this.alimentacion+")";
+    }
     public abstract TipoMascota getTipo();
 }
