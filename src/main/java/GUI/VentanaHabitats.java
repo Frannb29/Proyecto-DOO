@@ -94,18 +94,40 @@ public class VentanaHabitats extends JPanel{
     }
     private void compraHabitat(){
         Habitat[] totalHabitats = Habitat.values();
-        if (habitatsComprados.size() >= totalHabitats.length) {
-            JOptionPane.showMessageDialog(this, "¡Ya has comprado todos los habitats disponibles!");
+        
+        ArrayList<Habitat> habitatsDisponibles=new ArrayList<>();
+        for (Habitat h : totalHabitats) {
+            if (!habitatsComprados.contains(h)) {
+                habitatsDisponibles.add(h);
+            }
+        }
+
+        if (habitatsDisponibles.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "¡Felicidades! Ya has comprado todos los habitats disponibles.");
             return;
         }
-        Habitat siguienteHabitat = totalHabitats[habitatsComprados.size()];
-        try {
-            Tienda.getInstancia().comprarHabitat(siguienteHabitat, this.jugador);
-            desbloquearHabitat(siguienteHabitat);
-            JOptionPane.showMessageDialog(this, "¡Habitat comprado!");
-        }
-        catch (PagoInsuficienteException e){
-            JOptionPane.showMessageDialog(this, "Pago insuficiente");
+
+        Habitat[] opciones=habitatsDisponibles.toArray(new Habitat[0]);
+        
+        Habitat elegido=(Habitat) JOptionPane.showInputDialog(
+                this,
+                "Selecciona el hábitat que deseas comprar:",
+                "Comprar Hábitat",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opciones,
+                opciones[0]
+        );
+
+        if (elegido!=null) {
+            try {
+                Tienda.getInstancia().comprarHabitat(elegido, this.jugador);
+                desbloquearHabitat(elegido);
+                JOptionPane.showMessageDialog(this, "¡Hábitat "+elegido.name()+" comprado con éxito!");
+            }
+            catch (PagoInsuficienteException e){
+                JOptionPane.showMessageDialog(this, "No tienes dinero suficiente para comprar el hábitat "+elegido.name());
+            }
         }
     }
     private void comprarMascotaHabitat() {
