@@ -62,10 +62,4 @@ public class VentanaPrincipal extends JFrame {
         });
         timerGUI.start();
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new VentanaPrincipal().setVisible(true);
-        });
-    }
 }

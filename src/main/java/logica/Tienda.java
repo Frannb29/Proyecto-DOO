@@ -235,7 +235,7 @@ public class Tienda{
         
     }
 
-    public void venderMascota(Jugador jugador, Mascotas mascota) throws MascotaNoVendibleException {
+    private void venderMascota(Jugador jugador, Mascotas mascota) throws MascotaNoVendibleException {
         if(!mascota.sePuedeVender()){
             throw new MascotaNoVendibleException();
         }

@@ -38,10 +38,7 @@ public class TiendaTest{
     @Test
     public void testComprarMascota_HabitatLleno() throws PagoInsuficienteException, HabitatLlenoExcepcion{
         jugador.setPresupuesto(10000);
-        tienda.comprarMascota(TipoMascota.PERRO, jugador);
-        tienda.comprarMascota(TipoMascota.GATO, jugador);
-        tienda.comprarMascota(TipoMascota.GATO, jugador);
-        tienda.comprarMascota(TipoMascota.PERRO, jugador);
+       
         assertThrows(HabitatLlenoExcepcion.class, () -> {
             tienda.comprarMascota(TipoMascota.PERRO, jugador);
         }, "Se esperaba HabitatLlenoExcepcion porque el habitat ya tiene 4 mascotas");

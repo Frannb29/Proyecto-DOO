@@ -278,42 +278,5 @@ public class PanelHabitat extends JPanel{
     public ArrayList<JPanel> getEspaciosOcupados() {
         return this.espaciosOcupados;
     }
-    public static void main(String[] args){
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Habitat con Mascotas");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(900, 600);
-            frame.setLocationRelativeTo(null);
-            frame.setResizable(false);
 
-            PanelHabitat habitat = new PanelHabitat(Habitat.CASA);
-            JPanel panelControl = new JPanel();
-            JButton botonComprar = new JButton("Comprar Mascota");
-            JButton botonVender = new JButton("Vender Mascota");
-            panelControl.add(botonComprar);
-            panelControl.add(botonVender);
-
-            botonComprar.addActionListener(e -> {
-                Mascotas mascotaPrueba = MascotaFactory.crearMascota(TipoMascota.PERRO);
-                boolean compraExitosa = habitat.dibujarMascota("/Imagenes/Perro.png", mascotaPrueba);
-                if(!compraExitosa){
-                    JOptionPane.showMessageDialog(frame, "¡No puedes comprar más! El habitat está lleno");
-                }
-            });
-
-            botonVender.addActionListener(e -> {
-                ArrayList<JPanel> listaMascotas = habitat.getEspaciosOcupados();
-                if(!listaMascotas.isEmpty()){
-                    JPanel ultimaMascota = listaMascotas.get(listaMascotas.size() - 1);
-                    habitat.removerMascota(ultimaMascota);
-                } else {
-                    JOptionPane.showMessageDialog(frame, "No hay mascotas para vender");
-                }
-            });
-            frame.setLayout(new BorderLayout());
-            frame.add(habitat, BorderLayout.CENTER);
-            frame.add(panelControl, BorderLayout.SOUTH);
-            frame.setVisible(true);
-        });
-    }
 }
