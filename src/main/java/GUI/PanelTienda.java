@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 
 public class PanelTienda extends JPanel {
     private Jugador jugador;
-    private JLabel labelDinero;
     private JPanel panelCentral;
     private JScrollPane scroll;
     public PanelTienda(Jugador jugador){
@@ -16,10 +15,8 @@ public class PanelTienda extends JPanel {
         this.setLayout(new BorderLayout());
         JPanel panelSuperior=new JPanel(new FlowLayout(FlowLayout.LEFT,20,15));
         panelSuperior.setBackground(new Color(225,170,85));
-        labelDinero=new JLabel("$ "+ jugador.getPresupuesto());
         JButton botonAlimento=new JButton("Alimento");
         JButton botonMedicina=new JButton("Medicina");
-        panelSuperior.add(labelDinero);
         panelSuperior.add(botonAlimento);
         panelSuperior.add(botonMedicina);
         panelCentral=new JPanel();
@@ -49,15 +46,15 @@ public class PanelTienda extends JPanel {
         panelCentral.removeAll();
         panelCentral.setLayout(new GridLayout(0, 2, 20, 20));
         panelCentral.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        panelCentral.add(new PanelProducto("Comida Perro", TipoSuministro.ALIMENTO_PERRO,jugador,labelDinero));
-        panelCentral.add(new PanelProducto("Comida Gato", TipoSuministro.ALIMENTO_GATO,jugador,labelDinero));
-        panelCentral.add(new PanelProducto("Comida Conejo", TipoSuministro.ALIMENTO_CONEJO,jugador,labelDinero));
-        panelCentral.add(new PanelProducto("Comida Hamster", TipoSuministro.ALIMENTO_HAMSTER,jugador,labelDinero));
-        panelCentral.add(new PanelProducto("Comida Eevee", TipoSuministro.ALIMENTO_EEVEE,jugador,labelDinero));
-        panelCentral.add(new PanelProducto("Comida Bulbasaur", TipoSuministro.ALIMENTO_BULBASAUR,jugador,labelDinero));
-        panelCentral.add(new PanelProducto("Comida Pez", TipoSuministro.ALIMENTO_PEZ,jugador,labelDinero));
-        panelCentral.add(new PanelProducto("Comida Pulpo", TipoSuministro.ALIMENTO_PULPO,jugador,labelDinero));
-        panelCentral.add(new PanelProducto("Comida Tortuga", TipoSuministro.ALIMENTO_TORTUGA,jugador,labelDinero));
+        panelCentral.add(new PanelProducto("Comida Perro", TipoSuministro.ALIMENTO_PERRO,jugador));
+        panelCentral.add(new PanelProducto("Comida Gato", TipoSuministro.ALIMENTO_GATO,jugador));
+        panelCentral.add(new PanelProducto("Comida Conejo", TipoSuministro.ALIMENTO_CONEJO,jugador));
+        panelCentral.add(new PanelProducto("Comida Hamster", TipoSuministro.ALIMENTO_HAMSTER,jugador));
+        panelCentral.add(new PanelProducto("Comida Eevee", TipoSuministro.ALIMENTO_EEVEE,jugador));
+        panelCentral.add(new PanelProducto("Comida Bulbasaur", TipoSuministro.ALIMENTO_BULBASAUR,jugador));
+        panelCentral.add(new PanelProducto("Comida Pez", TipoSuministro.ALIMENTO_PEZ,jugador));
+        panelCentral.add(new PanelProducto("Comida Pulpo", TipoSuministro.ALIMENTO_PULPO,jugador));
+        panelCentral.add(new PanelProducto("Comida Tortuga", TipoSuministro.ALIMENTO_TORTUGA,jugador));
         panelCentral.revalidate();
         panelCentral.repaint();
     }
@@ -65,9 +62,9 @@ public class PanelTienda extends JPanel {
         panelCentral.removeAll();
         panelCentral.setLayout(new GridLayout(0, 2, 20, 20));
         panelCentral.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        panelCentral.add(new PanelProducto("Medicina Pequeña", TipoSuministro.MEDICINA_PEQUEÑA,jugador,labelDinero));
-        panelCentral.add(new PanelProducto("Medicina Mediana", TipoSuministro.MEDICINA_MEDIANA,jugador,labelDinero));
-        panelCentral.add(new PanelProducto("Medicina Grande", TipoSuministro.MEDICINA_GRANDE,jugador,labelDinero));
+        panelCentral.add(new PanelProducto("Medicina Pequeña", TipoSuministro.MEDICINA_PEQUEÑA,jugador));
+        panelCentral.add(new PanelProducto("Medicina Mediana", TipoSuministro.MEDICINA_MEDIANA,jugador));
+        panelCentral.add(new PanelProducto("Medicina Grande", TipoSuministro.MEDICINA_GRANDE,jugador));
         panelCentral.revalidate();
         panelCentral.repaint();
     }
