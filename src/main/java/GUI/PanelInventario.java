@@ -18,8 +18,12 @@ public class PanelInventario extends JPanel {
     private JButton botonMedicinaMediana;
     private JButton botonMedicinaGrande;
     public PanelInventario(){
-        this.setLayout((new FlowLayout(FlowLayout.CENTER,15,10)));
+        this.setLayout(new BorderLayout());
         this.setBackground(new Color(60,60,60));
+        JPanel panelBotones=new JPanel();
+        panelBotones.setLayout(new GridLayout(1,0,15,10));
+        panelBotones.setBackground(new Color(60,60,60));
+        panelBotones.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
         botonAlimentoPerro=crearBoton("/Imagenes/ALIMENTO_PERRO.png");
         botonAlimentoGato=crearBoton("/Imagenes/ALIMENTO_GATO.png");
         botonAlimentoConejo=crearBoton("/Imagenes/ALIMENTO_CONEJO.png");
@@ -32,18 +36,24 @@ public class PanelInventario extends JPanel {
         botonMedicinaPequeña=crearBoton("/Imagenes/MEDICINA_PEQUEÑA.png");
         botonMedicinaMediana=crearBoton("/Imagenes/MEDICINA_MEDIANA.png");
         botonMedicinaGrande=crearBoton("/Imagenes/MEDICINA_GRANDE.png");
-        this.add(botonAlimentoPerro);
-        this.add(botonAlimentoGato);
-        this.add(botonAlimentoConejo);
-        this.add(botonAlimentoHamster);
-        this.add(botonAlimentoEevee);
-        this.add(botonAlimentoBulbasaur);
-        this.add(botonAlimentoPez);
-        this.add(botonAlimentoPulpo);
-        this.add(botonAlimentoTortuga);
-        this.add(botonMedicinaPequeña);
-        this.add(botonMedicinaMediana);
-        this.add(botonMedicinaGrande);
+        panelBotones.add(botonAlimentoPerro);
+        panelBotones.add(botonAlimentoGato);
+        panelBotones.add(botonAlimentoConejo);
+        panelBotones.add(botonAlimentoHamster);
+        panelBotones.add(botonAlimentoEevee);
+        panelBotones.add(botonAlimentoBulbasaur);
+        panelBotones.add(botonAlimentoPez);
+        panelBotones.add(botonAlimentoPulpo);
+        panelBotones.add(botonAlimentoTortuga);
+        panelBotones.add(botonMedicinaPequeña);
+        panelBotones.add(botonMedicinaMediana);
+        panelBotones.add(botonMedicinaGrande);
+        JScrollPane scroll=new JScrollPane(panelBotones);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scroll.setBorder(null);
+        scroll.getHorizontalScrollBar().setUnitIncrement(16);
+        this.add(scroll,BorderLayout.CENTER);
         configurarAcciones();
     }
     public JButton crearBoton(String rutaImagen){
@@ -110,6 +120,19 @@ public class PanelInventario extends JPanel {
             Mascotas[] arregloMascotas=tienda.getMascotas().toArray(new Mascotas[0]);
             Mascotas mascotaSeleccionada=(Mascotas) JOptionPane.showInputDialog(this,"Elige mascota "+tipo.name(),"Usar suministro",JOptionPane.QUESTION_MESSAGE,null,arregloMascotas,arregloMascotas[0]);
             if(mascotaSeleccionada!=null){
+                if(suministro instanceof Alimento) {
+                    Alimento alimento=(Alimento) suministro;
+                    if(alimento.getTipoMascota()!=mascotaSeleccionada.getTipo()){
+                        JOptionPane.showMessageDialog(this, "Comida incorrecta para: "+mascotaSeleccionada.getTipo(),"Comida Incorrecta", JOptionPane.WARNING_MESSAGE);
+                        Jugador jugadorTemporal=new Jugador();
+                        jugadorTemporal.setPresupuesto(999999);
+                        try{
+                            tienda.comprarSuministros(jugadorTemporal, suministro);
+                        }
+                        catch (PagoInsuficienteException ignored){}
+                        return;
+                    }
+                }
                 suministro.usar(mascotaSeleccionada);
                 JOptionPane.showMessageDialog(this,mascotaSeleccionada.getTipo()+" ha recibido el suministro");
             }

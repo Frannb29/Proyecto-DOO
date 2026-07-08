@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 import java.net.URL;
 
 public class PanelProducto extends JPanel {
-    public PanelProducto(String nombre,TipoSuministro tipo,Jugador jugador,JLabel labelDinero){
+    public PanelProducto(String nombre,TipoSuministro tipo,Jugador jugador){
         this.setLayout(new BorderLayout(0, 15));
         this.setBackground(Color.WHITE);
         this.setPreferredSize(new Dimension(160, 250));
@@ -45,7 +45,6 @@ public class PanelProducto extends JPanel {
                         s=new Medicina(tipo);
                     }
                     Tienda.getInstancia().comprarSuministros(jugador,s);
-                    labelDinero.setText("$ "+jugador.getPresupuesto());
                     JOptionPane.showMessageDialog(null,"Articulo comprado");
                 }
                 catch (PagoInsuficienteException ex){
