@@ -1,7 +1,7 @@
 package logica;
 
-public class eevee extends Mascotas{
-    public eevee(){
+public class Eevee extends Mascotas{
+    public Eevee(){
         super(Habitat.POKECASA, 150);
     }
     @Override

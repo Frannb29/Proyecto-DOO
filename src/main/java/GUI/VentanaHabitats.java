@@ -75,7 +75,7 @@ public class VentanaHabitats extends JPanel{
                 rutaImagen = "/Imagenes/Bulbasaur.png";
                 break;
             case EEVEE:
-                rutaImagen = "/Imagenes/eevee.png";
+                rutaImagen = "/Imagenes/Eevee.png";
                 break;
             case PEZ_DORADO:
                 rutaImagen = "/Imagenes/pez_dorado.png";
@@ -123,18 +123,37 @@ public class VentanaHabitats extends JPanel{
             int index = pestañasHabitats.getSelectedIndex();
             String nombrePestaña = pestañasHabitats.getTitleAt(index);
 
-            TipoMascota tipo = TipoMascota.PERRO;
-            String rutaMascota = "/Imagenes/perro.png";
-            if (nombrePestaña.equals("ACUATICO")) {
-                tipo = TipoMascota.PEZ_DORADO;
-                rutaMascota = "/Imagenes/pez_dorado.png";
-            } else if (nombrePestaña.equals("POKECASA")) {
-                tipo = TipoMascota.BULBASAUR;
-                rutaMascota = "/Imagenes/Bulbasaur.png";
+            TipoMascota[] opciones=null;
+
+            if (nombrePestaña.equals("CASA")) {
+                opciones=new TipoMascota[]{
+                        TipoMascota.PERRO,TipoMascota.GATO,TipoMascota.CONEJO,TipoMascota.HAMSTER
+                };
+            } else if (nombrePestaña.equals("POKECASA")){
+                opciones=new TipoMascota[]{TipoMascota.EEVEE,TipoMascota.BULBASAUR};
+            }else if (nombrePestaña.equals("ACUATICO")){
+                opciones=new TipoMascota[]{TipoMascota.PEZ_DORADO,TipoMascota.PULPO,TipoMascota.TORTUGA};
             }
 
+            TipoMascota elegido=(TipoMascota) JOptionPane.showInputDialog(this,"Eliga una mascota","Comprar Mascota", JOptionPane.QUESTION_MESSAGE,null,opciones,opciones[0]);
+
+            if(elegido==null){
+                return;
+            }
+            String rutaMascota="";
+            switch (elegido) {
+                case PERRO: rutaMascota="/Imagenes/perro.png"; break;
+                case GATO: rutaMascota="/Imagenes/Gato.png"; break;
+                case CONEJO: rutaMascota="/Imagenes/Conejo.png"; break;
+                case HAMSTER: rutaMascota="/Imagenes/Hamster.png"; break;
+                case BULBASAUR: rutaMascota="/Imagenes/Bulbasaur.png"; break;
+                case EEVEE: rutaMascota= "/Imagenes/Eevee.png"; break;
+                case PEZ_DORADO: rutaMascota="/Imagenes/pez_dorado.png"; break;
+                case TORTUGA: rutaMascota="/Imagenes/tortuga.png"; break;
+                case PULPO: rutaMascota="/Imagenes/pulpo.png"; break;
+            }
             try {
-                Mascotas nuevaMascota = Tienda.getInstancia().comprarMascota(tipo, this.jugador);
+                Mascotas nuevaMascota = Tienda.getInstancia().comprarMascota(elegido, this.jugador);
                 boolean compraExitosa = habitatActivo.dibujarMascota(rutaMascota, nuevaMascota);
                 if (!compraExitosa) {
                     JOptionPane.showMessageDialog(this, "Error visual al renderizar la mascota");

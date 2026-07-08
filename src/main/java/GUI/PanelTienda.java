@@ -53,6 +53,11 @@ public class PanelTienda extends JPanel {
         panelCentral.add(new PanelProducto("Comida Gato", TipoSuministro.ALIMENTO_GATO,jugador,labelDinero));
         panelCentral.add(new PanelProducto("Comida Conejo", TipoSuministro.ALIMENTO_CONEJO,jugador,labelDinero));
         panelCentral.add(new PanelProducto("Comida Hamster", TipoSuministro.ALIMENTO_HAMSTER,jugador,labelDinero));
+        panelCentral.add(new PanelProducto("Comida Eevee", TipoSuministro.ALIMENTO_EEVEE,jugador,labelDinero));
+        panelCentral.add(new PanelProducto("Comida Bulbasaur", TipoSuministro.ALIMENTO_BULBASAUR,jugador,labelDinero));
+        panelCentral.add(new PanelProducto("Comida Pez", TipoSuministro.ALIMENTO_PEZ,jugador,labelDinero));
+        panelCentral.add(new PanelProducto("Comida Pulpo", TipoSuministro.ALIMENTO_PULPO,jugador,labelDinero));
+        panelCentral.add(new PanelProducto("Comida Tortuga", TipoSuministro.ALIMENTO_TORTUGA,jugador,labelDinero));
         panelCentral.revalidate();
         panelCentral.repaint();
     }
