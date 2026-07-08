@@ -51,4 +51,8 @@ public class Gato extends Mascotas{
     public TipoMascota getTipo(){
         return TipoMascota.GATO;
     }
+    @Override
+    public TipoSuministro getTipoAlimento(){
+        return TipoSuministro.ALIMENTO_GATO;
+    }
 }

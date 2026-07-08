@@ -17,7 +17,7 @@ public class Perro extends Mascotas {
                 this.setEstado(new EstadoSano());
             }
         }
-        
+
     }
     @Override
     public int getDesgasteAlimentacion(){
@@ -51,5 +51,9 @@ public class Perro extends Mascotas {
     @Override
     public TipoMascota getTipo(){
         return TipoMascota.PERRO;
+    }
+    @Override
+    public TipoSuministro getTipoAlimento(){
+        return TipoSuministro.ALIMENTO_PERRO;
     }
 }

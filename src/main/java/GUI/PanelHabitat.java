@@ -132,13 +132,22 @@ public class PanelHabitat extends JPanel{
         contenedorMascota.add(labelMascota);
         contenedorMascota.add(Box.createVerticalStrut(8));
 
-        contenedorMascota.setPreferredSize(new Dimension(120, 270));
-
         contenedorMascota.putClientProperty("mascota", mascota);
         contenedorMascota.putClientProperty("barraAlimento", barraAlimento);
         contenedorMascota.putClientProperty("barraFelicidad", barraFelicidad);
         contenedorMascota.putClientProperty("barraSalud", barraSalud);
         contenedorMascota.putClientProperty("barraHigiene", barraHigiene);
+
+        JPanel panelBotones = new JPanel(new GridLayout(2,2,4,4));
+
+        for(accionMascota accion : accionMascota.values()){
+            JButton boton = new JButton(accion.getNombre());
+            boton.setFont(new Font("Arial", Font.PLAIN, 10));
+            boton.addActionListener(e -> ejecutarAccion(accion, mascota));
+            panelBotones.add(boton);
+        }
+        contenedorMascota.add(panelBotones);
+        contenedorMascota.setPreferredSize(new Dimension(130, 340));
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = espaciosOcupados.size();
@@ -158,6 +167,38 @@ public class PanelHabitat extends JPanel{
         return true;
     }
 
+    private void ejecutarAccion(accionMascota accion, Mascotas mascota){
+        try {
+            switch (accion){
+                case ALIMENTAR:
+                    TipoSuministro tipoComida = mascota.getTipoAlimento();
+                    Suministros comida = Tienda.getInstancia().seleccionarSuministro(tipoComida);
+                    mascota.alimentar((Alimento) comida);
+                    JOptionPane.showMessageDialog(this, "Mascota alimentada");
+                    break;
+                case SANAR:
+                    Suministros medicina = Tienda.getInstancia().sacarMedicina();
+                    mascota.sanar((Medicina) medicina);
+                    JOptionPane.showMessageDialog(this, "Mascota curada");
+                    break;
+                case LIMPIAR:
+                    mascota.limpiar();
+                    JOptionPane.showMessageDialog(this, "Mascota limpiada");
+                    break;
+                case JUGAR:
+                    mascota.jugar();
+                    JOptionPane.showMessageDialog(this, "Jugaste con la mascota, su felicidad aumentó");
+                    break;
+            }
+            actualizarBarrasMascotas();
+        }
+        catch (DepositoVacioException e){
+            JOptionPane.showMessageDialog(this, "No quedan suministros de ese tipo en el inventario");
+        }
+        catch (EstadoMascotaInvalidoException e){
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
     public void actualizarBarrasMascotas(){
         for (JPanel contenedor : espaciosOcupados) {
             Mascotas mLogica = (Mascotas) contenedor.getClientProperty("mascota");
@@ -178,10 +219,22 @@ public class PanelHabitat extends JPanel{
         repaint();
     }
 
-    public void removerMascota(Component mascotaVendida){
+    public void removerMascota(JPanel mascotaVendida){
         if(espaciosOcupados.contains(mascotaVendida)){
             panelMascotas.remove(mascotaVendida);
             espaciosOcupados.remove(mascotaVendida);
+            panelMascotas.removeAll();
+            GridBagConstraints c = new GridBagConstraints();
+            c.gridy = 0;
+            c.weightx = 0.20;
+            c.weighty = 1.0;
+            c.anchor = GridBagConstraints.SOUTH;
+            c.insets = new Insets(0, 10, 20, 10);
+
+            for (int i = 0; i < espaciosOcupados.size(); i++) {
+                c.gridx = i;
+                panelMascotas.add(espaciosOcupados.get(i), c);
+            }
 
             panelMascotas.revalidate();
             panelMascotas.repaint();

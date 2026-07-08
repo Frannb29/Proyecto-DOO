@@ -51,4 +51,8 @@ public class Conejo extends Mascotas{
     public TipoMascota getTipo(){
         return TipoMascota.CONEJO;
     }
+    @Override
+    public TipoSuministro getTipoAlimento(){
+        return TipoSuministro.ALIMENTO_CONEJO;
+    }
 }

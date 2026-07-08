@@ -1,8 +1,11 @@
 package logica;
 
 public enum TipoMascota{
-    POKEMON,
-    PEZ,
+    BULBASAUR,
+    EEVEE,
+    TORTUGA,
+    PULPO,
+    PEZ_DORADO,
     GATO,
     CONEJO,
     HAMSTER,

@@ -11,6 +11,11 @@ public class Tienda{
     private Deposito<Alimento> stockAlimentoGato;
     private Deposito<Alimento> stockAlimentoConejo;
     private Deposito<Alimento> stockAlimentoHamster;
+    private Deposito<Alimento> stockAlimentoBulbasaur;
+    private Deposito<Alimento> stockAlimentoEevee;
+    private Deposito<Alimento> stockAlimentoTortuga;
+    private Deposito<Alimento> stockAlimentoPulpo;
+    private Deposito<Alimento> stockAlimentoPez;
     private Deposito<Medicina> stockMedicinaPequeña;
     private Deposito<Medicina> stockMedicinaMediana;
     private Deposito<Medicina> stockMedicinaGrande;
@@ -22,6 +27,11 @@ public class Tienda{
         stockAlimentoGato=new Deposito<Alimento>();
         stockAlimentoConejo=new Deposito<Alimento>();
         stockAlimentoHamster=new Deposito<Alimento>();
+        stockAlimentoBulbasaur=new Deposito<Alimento>();
+        stockAlimentoEevee=new Deposito<Alimento>();
+        stockAlimentoTortuga=new Deposito<Alimento>();
+        stockAlimentoPulpo=new Deposito<Alimento>();
+        stockAlimentoPez=new Deposito<Alimento>();
         stockMedicinaPequeña=new Deposito<Medicina>();
         stockMedicinaMediana=new Deposito<Medicina>();
         stockMedicinaGrande=new Deposito<Medicina>();
@@ -60,6 +70,22 @@ public class Tienda{
                 else if(alimento.getTipoMascota()==TipoMascota.HAMSTER){
                     stockAlimentoHamster.add(alimento);
                 }
+                else if(alimento.getTipoMascota()==TipoMascota.BULBASAUR){
+                    stockAlimentoBulbasaur.add(alimento);
+                }
+                else if(alimento.getTipoMascota()==TipoMascota.EEVEE){
+                    stockAlimentoEevee.add(alimento);
+                }
+                else if(alimento.getTipoMascota()==TipoMascota.TORTUGA){
+                    stockAlimentoTortuga.add(alimento);
+                }
+                else if(alimento.getTipoMascota()==TipoMascota.PULPO){
+                    stockAlimentoPulpo.add(alimento);
+                }
+                else if(alimento.getTipoMascota()==TipoMascota.PEZ_DORADO){
+                    stockAlimentoPez.add(alimento);
+                }
+
             }
             else if(objeto instanceof Medicina){
                 Medicina medicina=(Medicina) objeto;
@@ -76,8 +102,12 @@ public class Tienda{
         }
     }
 
-    public Mascotas comprarMascota(TipoMascota tipo, Jugador jugador)throws PagoInsuficienteException, HabitatLlenoExcepcion{
+    public Mascotas comprarMascota(TipoMascota tipo, Jugador jugador)throws PagoInsuficienteException, HabitatLlenoExcepcion, HabitatBloqueadoException{
         Mascotas nuevaMascota = MascotaFactory.crearMascota(tipo);
+        Habitat habitatRequerido = nuevaMascota.getHabitat();
+        if (!jugador.tieneHabitat(habitatRequerido)) {
+            throw new HabitatBloqueadoException("No puedes comprar esta mascota porque no has adquirido el hábitat " + habitatRequerido.getNombre());
+        }
         if(jugador.getPresupuesto() < nuevaMascota.getPrecio()){
             throw new PagoInsuficienteException();
         }
@@ -112,6 +142,36 @@ public class Tienda{
                 throw new DepositoVacioException("comida de hamster");
             }
             return stockAlimentoHamster.get();
+        }
+        else if(tipo==TipoSuministro.ALIMENTO_BULBASAUR){
+            if(stockAlimentoBulbasaur.getSize()==0){
+                throw new DepositoVacioException("comida de bulbasaur");
+            }
+            return stockAlimentoBulbasaur.get();
+        }
+        else if(tipo==TipoSuministro.ALIMENTO_EEVEE){
+            if(stockAlimentoEevee.getSize()==0){
+                throw new DepositoVacioException("comida de eevee");
+            }
+            return stockAlimentoEevee.get();
+        }
+        else if(tipo==TipoSuministro.ALIMENTO_TORTUGA){
+            if(stockAlimentoTortuga.getSize()==0){
+                throw new DepositoVacioException("comida de tortuga");
+            }
+            return stockAlimentoTortuga.get();
+        }
+        else if(tipo==TipoSuministro.ALIMENTO_PULPO){
+            if(stockAlimentoPulpo.getSize()==0){
+                throw new DepositoVacioException("comida de pulpo");
+            }
+            return stockAlimentoPulpo.get();
+        }
+        else if(tipo==TipoSuministro.ALIMENTO_PEZ){
+            if(stockAlimentoPez.getSize()==0){
+                throw new DepositoVacioException("comida de pez dorado");
+            }
+            return stockAlimentoPez.get();
         }
         else if(tipo==TipoSuministro.MEDICINA_PEQUEÑA){
             if(stockMedicinaPequeña.getSize()==0){
@@ -190,6 +250,7 @@ public class Tienda{
         }
         else{
             jugador.descontarPresupuesto(costo);
+            jugador.registrarHabitat(habitat);
             System.out.println("Habitat " + habitat.getNombre() + " comprado con exito");
         }
     }
@@ -209,6 +270,18 @@ public class Tienda{
         }
         return contador;
     }
+    public Suministros sacarMedicina() throws DepositoVacioException {
+        if(stockMedicinaPequeña.getSize() > 0){
+            return stockMedicinaPequeña.get();
+        }
+        if(stockMedicinaMediana.getSize() > 0){
+            return stockMedicinaMediana.get();
+        }
+        if(stockMedicinaGrande.getSize() > 0){
+            return stockMedicinaGrande.get();
+        }
+        throw new DepositoVacioException("medicinas");
+    }
     public void addMascota(Mascotas mascota){
         mascotas.add(mascota);
     }
@@ -224,6 +297,21 @@ public class Tienda{
     }
     public int getCantidadAlimentoHamster() {
         return stockAlimentoHamster.getSize();
+    }
+    public int getCantidadAlimentoBulbasaur() {
+        return stockAlimentoBulbasaur.getSize();
+    }
+    public int getCantidadAlimentoEevee() {
+        return stockAlimentoEevee.getSize();
+    }
+    public int getCantidadAlimentoTortuga() {
+        return stockAlimentoTortuga.getSize();
+    }
+    public int getCantidadAlimentoPulpo() {
+        return stockAlimentoPulpo.getSize();
+    }
+    public int getCantidadAlimentoPez() {
+        return stockAlimentoPez.getSize();
     }
     public int getCantidadMedicinaPequeña() {
         return stockMedicinaPequeña.getSize();

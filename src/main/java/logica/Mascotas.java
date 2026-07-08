@@ -78,6 +78,7 @@ public abstract class Mascotas implements ObservadorReloj {
             this.habitat.ensuciar(2);
         }
     }
+    public abstract TipoSuministro getTipoAlimento();
     public abstract void alimentar(Alimento alimento);
     public abstract void sanar(Medicina medicina);
     public void limpiar()throws EstadoMascotaInvalidoException{

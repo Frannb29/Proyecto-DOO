@@ -41,7 +41,7 @@ public class VentanaHabitats extends JPanel{
         panelTienda.setPreferredSize(new Dimension(1024, 100));
 
         JButton botonComprar = new JButton("Comprar Mascota");
-        JButton botonVender = new JButton("Vender Mascotaa");
+        JButton botonVender = new JButton("Vender Mascota");
         JButton botonComprarHabitat = new JButton("Comprar Habitat");
         panelTienda.add(botonComprar);
         panelTienda.add(botonVender);
@@ -57,6 +57,48 @@ public class VentanaHabitats extends JPanel{
         panelesHabitats.add(panelIndividual);
         pestañasHabitats.addTab(habitat.name(), panelIndividual);
 
+    }
+    public void agregarMascota(Mascotas nuevaMascota){
+        String rutaImagen = "/Imagenes/perro.png";
+
+        switch (nuevaMascota.getTipo()) {
+            case GATO:
+                rutaImagen = "/Imagenes/Gato.png";
+                break;
+            case CONEJO:
+                rutaImagen = "/Imagenes/Conejo.png";
+                break;
+            case HAMSTER:
+                rutaImagen = "/Imagenes/Hamster.png";
+                break;
+            case BULBASAUR:
+                rutaImagen = "/Imagenes/Bulbasaur.png";
+                break;
+            case EEVEE:
+                rutaImagen = "/Imagenes/eevee.png";
+                break;
+            case PEZ_DORADO:
+                rutaImagen = "/Imagenes/pez_dorado.png";
+                break;
+            case PULPO:
+                rutaImagen = "/Imagenes/pulpo.png";
+                break;
+            case TORTUGA:
+                rutaImagen = "/Imagenes/tortuga.png";
+                break;
+        }
+        Habitat habitatRequerido = nuevaMascota.getHabitat();
+
+        for(int i = 0; i < pestañasHabitats.getTabCount(); i++){
+            String nombrePestaña = pestañasHabitats.getTitleAt(i);
+            if(nombrePestaña.equals(habitatRequerido.name())){
+                PanelHabitat panelDestino = (PanelHabitat) pestañasHabitats.getComponentAt(i);
+                panelDestino.dibujarMascota(rutaImagen, nuevaMascota);
+
+                pestañasHabitats.repaint();
+                return;
+            }
+        }
     }
     private void compraHabitat(){
         Habitat[] totalHabitats = Habitat.values();
@@ -84,10 +126,10 @@ public class VentanaHabitats extends JPanel{
             TipoMascota tipo = TipoMascota.PERRO;
             String rutaMascota = "/Imagenes/perro.png";
             if (nombrePestaña.equals("ACUATICO")) {
-                tipo = TipoMascota.PEZ;
+                tipo = TipoMascota.PEZ_DORADO;
                 rutaMascota = "/Imagenes/pez_dorado.png";
             } else if (nombrePestaña.equals("POKECASA")) {
-                tipo = TipoMascota.POKEMON;
+                tipo = TipoMascota.BULBASAUR;
                 rutaMascota = "/Imagenes/Bulbasaur.png";
             }
 
@@ -99,10 +141,15 @@ public class VentanaHabitats extends JPanel{
                 } else {
                     pestañasHabitats.repaint();
                 }
-            } catch (PagoInsuficienteException e) {
+            }
+            catch (PagoInsuficienteException e){
                 JOptionPane.showMessageDialog(this, "No tienes dinero suficiente para comprar esta mascota");
-            } catch (HabitatLlenoExcepcion e) {
+            }
+            catch (HabitatLlenoExcepcion e){
                 JOptionPane.showMessageDialog(this, "El habitat " + nombrePestaña + " está lleno");
+            }
+            catch (HabitatBloqueadoException e){
+                JOptionPane.showMessageDialog(this, "El habitat " + nombrePestaña + " no lo has comprado");
             }
         }
     }
@@ -121,7 +168,13 @@ public class VentanaHabitats extends JPanel{
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             Jugador jugador = new Jugador();
-            new VentanaHabitats(jugador).setVisible(true);
+            JFrame ventanaPrincipal = new JFrame("Tienda de Mascotas");
+            ventanaPrincipal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            ventanaPrincipal.setSize(1024, 768);
+            ventanaPrincipal.setLocationRelativeTo(null);
+            VentanaHabitats panelJuego = new VentanaHabitats(jugador);
+            ventanaPrincipal.add(panelJuego);
+            ventanaPrincipal.setVisible(true);
         });
     }
 }

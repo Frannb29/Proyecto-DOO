@@ -1,12 +1,12 @@
 package logica;
 
-public class Hamster extends Mascotas{
-    public Hamster(){
-        super(Habitat.CASA, 130);
+public class Bulbasaur extends Mascotas{
+    public Bulbasaur(){
+        super(Habitat.POKECASA, 130);
     }
     @Override
     public void alimentar(Alimento alimento){
-        if(alimento.getTipoMascota()==TipoMascota.HAMSTER){
+        if(alimento.getTipoMascota()==TipoMascota.BULBASAUR){
             int puntosComida=alimento.getComida();
             this.setAlimentacion(this.getAlimentacion() + puntosComida);
 
@@ -17,22 +17,23 @@ public class Hamster extends Mascotas{
                 this.setEstado(new EstadoSano());
             }
         }
+
     }
     @Override
     public int getDesgasteAlimentacion(){
-        return 2;
+        return 4;
     }
     @Override
     public int getDesgasteSalud(){
-        return 5;
+        return 3;
     }
     @Override
     public int getDesgasteHigiene(){
-        return 2;
+        return 5;
     }
     @Override
     public int getDesgasteFelicidad(){
-        return 3;
+        return 5;
     }
     @Override
     public void sanar(Medicina medicina){
@@ -48,10 +49,10 @@ public class Hamster extends Mascotas{
     }
     @Override
     public TipoMascota getTipo(){
-        return TipoMascota.HAMSTER;
+        return TipoMascota.BULBASAUR;
     }
     @Override
     public TipoSuministro getTipoAlimento(){
-        return TipoSuministro.ALIMENTO_HAMSTER;
+        return TipoSuministro.ALIMENTO_BULBASAUR;
     }
 }

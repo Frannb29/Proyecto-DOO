@@ -5,6 +5,8 @@ public class EstadoEnfermo implements EstadoMascota{
     public void procesarTick(Mascotas mascota){
         mascota.setSalud(mascota.getSalud()-mascota.getDesgasteSalud());
         mascota.setFelicidad(mascota.getFelicidad()-(2*mascota.getDesgasteFelicidad()));
+        mascota.setHigiene(mascota.getHigiene()-(2*mascota.getDesgasteHigiene()));
+        mascota.setAlimentacion(mascota.getAlimentacion()-mascota.getDesgasteAlimentacion());
     }
     @Override
     public void jugar(Mascotas mascota)throws EstadoMascotaInvalidoException{

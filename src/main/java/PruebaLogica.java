@@ -40,6 +40,8 @@ public class PruebaLogica {
                         System.out.println("¡Error! No tienes suficiente dinero para comprar un perro");
                     } catch (HabitatLlenoExcepcion e) {
                         System.out.println(e.getMessage());
+                    } catch (HabitatBloqueadoException e) {
+                        System.out.println(e.getMessage());
                     }
                     break;
                     
@@ -49,6 +51,8 @@ public class PruebaLogica {
                     } catch (PagoInsuficienteException e) {
                         System.out.println("¡Error! No tienes suficiente dinero para comprar un gato");
                     } catch (HabitatLlenoExcepcion e) {
+                        System.out.println(e.getMessage());
+                    } catch (HabitatBloqueadoException e) {
                         System.out.println(e.getMessage());
                     }
                     break;
