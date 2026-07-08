@@ -1,21 +1,20 @@
 package GUI;
 
 import logica.*;
-
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
-public class PanelHabitat extends JPanel{
+public class PanelHabitat extends JPanel {
     private Image imagenFondo;
     private JPanel panelMascotas;
     private ArrayList<JPanel> espaciosOcupados = new ArrayList<>();
     private JProgressBar barraHigieneHabitat;
     private Habitat habitat;
 
-    public PanelHabitat (Habitat habitat){
+    public PanelHabitat(Habitat habitat) {
         this.habitat = habitat;
         String ruta = habitat.getRuta();
         setLayout(new BorderLayout());
@@ -53,20 +52,21 @@ public class PanelHabitat extends JPanel{
             } else {
                 System.err.println("No se encontró el recurso en la ruta: " + ruta);
             }
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Error cargando la imagen " + ruta);
         }
     }
+
     @Override
-    public void paintComponent(Graphics g){
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if(imagenFondo != null){
+        if (imagenFondo != null) {
             g.drawImage(imagenFondo, 0, 0, getWidth(), getHeight(), this);
         }
     }
 
-    public boolean dibujarMascota(String rutaImagen, Mascotas mascota){
+    public boolean dibujarMascota(String rutaImagen, Mascotas mascota) {
 
         if (espaciosOcupados.size() >= 4) {
             System.out.println("El habitat está lleno");
@@ -74,13 +74,12 @@ public class PanelHabitat extends JPanel{
         }
         java.net.URL urlMascota = getClass().getResource(rutaImagen);
         JLabel labelMascota;
-        if(urlMascota != null){
+        if (urlMascota != null) {
             ImageIcon iconoOriginal = new ImageIcon(urlMascota);
             Image imagenAjustada = iconoOriginal.getImage().getScaledInstance(110, 140, Image.SCALE_SMOOTH);
             labelMascota = new JLabel(new ImageIcon(imagenAjustada));
-        }
-        else {
-            System.out.println("Error, no se encontro la imagen en la ruta "+ rutaImagen);
+        } else {
+            System.out.println("Error, no se encontro la imagen en la ruta " + rutaImagen);
             return false;
         }
 
@@ -139,17 +138,44 @@ public class PanelHabitat extends JPanel{
         contenedorMascota.setLayout(new BoxLayout(contenedorMascota, BoxLayout.Y_AXIS));
         contenedorMascota.setOpaque(false);
 
-        JPanel panelBotones = new JPanel(new GridLayout(2,2,4,4));
+        JPanel panelBotones = new JPanel(new GridLayout(3, 1, 4, 4));
         panelBotones.setOpaque(false);
-        for(accionMascota accion : accionMascota.values()){
-            JButton boton = new JButton(accion.getNombre());
-            boton.setFont(new Font("Arial", Font.PLAIN, 10));
-            boton.addActionListener(e -> ejecutarAccion(accion, mascota));
-            panelBotones.add(boton);
-        }
+
+        JButton botonSuministro = new JButton("Dar Item");
+        botonSuministro.setFont(new Font("Arial", Font.PLAIN, 10));
+        botonSuministro.addActionListener(e -> darSuministro(mascota));
+
+        JButton botonLimpiar = new JButton("Limpiar");
+        botonLimpiar.setFont(new Font("Arial", Font.PLAIN, 10));
+        botonLimpiar.addActionListener(e -> {
+            try {
+                mascota.limpiar();
+                JOptionPane.showMessageDialog(this, "Mascota limpiada");
+                actualizarBarras();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
+        });
+
+        JButton botonJugar = new JButton("Jugar");
+        botonJugar.setFont(new Font("Arial", Font.PLAIN, 10));
+        botonJugar.addActionListener(e -> {
+            try {
+                mascota.jugar();
+                JOptionPane.showMessageDialog(this, "Jugaste con la mascota, su felicidad aumentó");
+                actualizarBarras();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
+        });
+
+        panelBotones.add(botonSuministro);
+        panelBotones.add(botonLimpiar);
+        panelBotones.add(botonJugar);
+        
         contenedorMascota.add(panelBotones);
         contenedorMascota.add(Box.createVerticalStrut(10));
-
+    
         contenedorMascota.add(txtAlimento);
         contenedorMascota.add(barraAlimento);
         contenedorMascota.add(Box.createVerticalStrut(4));
@@ -177,7 +203,7 @@ public class PanelHabitat extends JPanel{
         contenedorMascota.putClientProperty("barraSalud", barraSalud);
         contenedorMascota.putClientProperty("barraHigiene", barraHigiene);
 
-        contenedorMascota.setPreferredSize(new Dimension(130, 340));
+        contenedorMascota.setPreferredSize(new Dimension(130, 360)); 
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = espaciosOcupados.size();
@@ -197,40 +223,64 @@ public class PanelHabitat extends JPanel{
         return true;
     }
 
-    private void ejecutarAccion(accionMascota accion, Mascotas mascota){
-        try {
-            switch (accion){
-                case ALIMENTAR:
-                    TipoSuministro tipoComida = mascota.getTipoAlimento();
-                    Suministros comida = Tienda.getInstancia().seleccionarSuministro(tipoComida);
-                    mascota.alimentar((Alimento) comida);
-                    JOptionPane.showMessageDialog(this, "Mascota alimentada");
-                    break;
-                case SANAR:
-                    Suministros medicina = Tienda.getInstancia().sacarMedicina();
-                    mascota.sanar((Medicina) medicina);
-                    JOptionPane.showMessageDialog(this, "Mascota curada");
-                    break;
-                case LIMPIAR:
-                    mascota.limpiar();
-                    JOptionPane.showMessageDialog(this, "Mascota limpiada");
-                    break;
-                case JUGAR:
-                    mascota.jugar();
-                    JOptionPane.showMessageDialog(this, "Jugaste con la mascota, su felicidad aumentó");
-                    break;
+    private void darSuministro(Mascotas mascota) {
+        ArrayList<TipoSuministro> disponibles = obtenerSuministrosDisponibles();
+
+        if (disponibles.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Tu inventario de suministros está vacío.", "Inventario", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        TipoSuministro elegido = (TipoSuministro) JOptionPane.showInputDialog(
+                this,
+                "Selecciona el suministro a dar:",
+                "Usar Suministro",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                disponibles.toArray(),
+                disponibles.get(0)
+        );
+
+        if (elegido != null) {
+            try {
+                Suministros suministro = Tienda.getInstancia().seleccionarSuministro(elegido);
+                suministro.usar(mascota);
+                JOptionPane.showMessageDialog(this, "Suministro aplicado con éxito.");
+                actualizarBarras();
+            } catch (DepositoVacioException e) {
+                JOptionPane.showMessageDialog(this, "No quedan suministros de ese tipo.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, e.getMessage());
             }
-            actualizarBarras();
-        }
-        catch (DepositoVacioException e){
-            JOptionPane.showMessageDialog(this, "No quedan suministros de ese tipo en el inventario");
-        }
-        catch (EstadoMascotaInvalidoException e){
-            JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }
-    public void actualizarBarras(){
-        if(habitat != null && barraHigieneHabitat != null){
+
+    private ArrayList<TipoSuministro> obtenerSuministrosDisponibles() {
+        Tienda tienda = Tienda.getInstancia();
+        ArrayList<TipoSuministro> disponibles = new ArrayList<>();
+        
+        // Verifica uno por uno qué suministros tienen cantidad mayor a 0
+        if (tienda.getCantidadAlimentoPerro() > 0) disponibles.add(TipoSuministro.ALIMENTO_PERRO);
+        if (tienda.getCantidadAlimentoGato() > 0) disponibles.add(TipoSuministro.ALIMENTO_GATO);
+        if (tienda.getCantidadAlimentoConejo() > 0) disponibles.add(TipoSuministro.ALIMENTO_CONEJO);
+        if (tienda.getCantidadAlimentoHamster() > 0) disponibles.add(TipoSuministro.ALIMENTO_HAMSTER);
+        if (tienda.getCantidadAlimentoEevee() > 0) disponibles.add(TipoSuministro.ALIMENTO_EEVEE);
+        if (tienda.getCantidadAlimentoBulbasaur() > 0) disponibles.add(TipoSuministro.ALIMENTO_BULBASAUR);
+        if (tienda.getCantidadAlimentoPez() > 0) disponibles.add(TipoSuministro.ALIMENTO_PEZ);
+        if (tienda.getCantidadAlimentoPulpo() > 0) disponibles.add(TipoSuministro.ALIMENTO_PULPO);
+        if (tienda.getCantidadAlimentoTortuga() > 0) disponibles.add(TipoSuministro.ALIMENTO_TORTUGA);
+        
+        if (tienda.getCantidadMedicinaPequeña() > 0) disponibles.add(TipoSuministro.MEDICINA_PEQUEÑA);
+        if (tienda.getCantidadMedicinaMediana() > 0) disponibles.add(TipoSuministro.MEDICINA_MEDIANA);
+        if (tienda.getCantidadMedicinaGrande() > 0) disponibles.add(TipoSuministro.MEDICINA_GRANDE);
+        
+        return disponibles;
+    }
+
+    // -------------------------------------------------
+
+    public void actualizarBarras() {
+        if (habitat != null && barraHigieneHabitat != null) {
             barraHigieneHabitat.setValue(habitat.getHigiene());
         }
         for (JPanel contenedor : espaciosOcupados) {
@@ -240,20 +290,19 @@ public class PanelHabitat extends JPanel{
             JProgressBar bSalud = (JProgressBar) contenedor.getClientProperty("barraSalud");
             JProgressBar bHigiene = (JProgressBar) contenedor.getClientProperty("barraHigiene");
 
-            if(mLogica != null){
+            if (mLogica != null) {
                 if (bAlimento != null) bAlimento.setValue(mLogica.getAlimentacion());
                 if (bFelicidad != null) bFelicidad.setValue(mLogica.getFelicidad());
                 if (bSalud != null) bSalud.setValue(mLogica.getSalud());
                 if (bHigiene != null) bHigiene.setValue(mLogica.getHigiene());
-
             }
         }
         revalidate();
         repaint();
     }
 
-    public void removerMascota(JPanel mascotaVendida){
-        if(espaciosOcupados.contains(mascotaVendida)){
+    public void removerMascota(JPanel mascotaVendida) {
+        if (espaciosOcupados.contains(mascotaVendida)) {
             panelMascotas.remove(mascotaVendida);
             espaciosOcupados.remove(mascotaVendida);
             panelMascotas.removeAll();
@@ -275,8 +324,8 @@ public class PanelHabitat extends JPanel{
             this.repaint();
         }
     }
+
     public ArrayList<JPanel> getEspaciosOcupados() {
         return this.espaciosOcupados;
     }
-
 }

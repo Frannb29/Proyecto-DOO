@@ -24,7 +24,7 @@ public class VentanaPrincipal extends JFrame {
         simulador.iniciarSimulacion();
 
         setTitle("Simulador de Tienda de Mascotas");
-        setSize(1024, 768);
+        setSize(1280, 720);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());

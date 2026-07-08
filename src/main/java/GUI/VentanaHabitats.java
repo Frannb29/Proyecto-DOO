@@ -32,14 +32,12 @@ public class VentanaHabitats extends JPanel{
         panelTienda.setPreferredSize(new Dimension(1024, 100));
 
         JButton botonComprar = new JButton("Comprar Mascota");
-        JButton botonVender = new JButton("Vender Mascota");
+ 
         JButton botonComprarHabitat = new JButton("Comprar Habitat");
         panelTienda.add(botonComprar);
-        panelTienda.add(botonVender);
         panelTienda.add(botonComprarHabitat);
         add(panelTienda, BorderLayout.SOUTH);
         botonComprar.addActionListener(e -> comprarMascotaHabitat());
-        botonVender.addActionListener(e -> venderMascotaHabitat());
         botonComprarHabitat.addActionListener(e -> compraHabitat());
     }
     private void desbloquearHabitat(Habitat habitat){
@@ -53,6 +51,9 @@ public class VentanaHabitats extends JPanel{
         String rutaImagen = "/Imagenes/perro.png";
 
         switch (nuevaMascota.getTipo()) {
+            case PERRO:
+                rutaImagen = "/Imagenes/perro.png";
+                break;
             case GATO:
                 rutaImagen = "/Imagenes/Gato.png";
                 break;
@@ -163,18 +164,7 @@ public class VentanaHabitats extends JPanel{
             }
         }
     }
-    public void venderMascotaHabitat(){
-        PanelHabitat habitatActivo = (PanelHabitat) pestañasHabitats.getSelectedComponent();
-        if(habitatActivo != null){
-            ArrayList<JPanel> listaMascotas = habitatActivo.getEspaciosOcupados();
-            if(!listaMascotas.isEmpty()){
-                JPanel mascotaVendida = listaMascotas.get(listaMascotas.size() - 1);
-                habitatActivo.removerMascota(mascotaVendida);
-            } else {
-                JOptionPane.showMessageDialog(this, "No tienes mascotas en este habitat para vender");
-            }
-        }
-    }
+    
     public void actualizarHabitat() {
         for(PanelHabitat panel : panelesHabitats){
             panel.actualizarBarras();
