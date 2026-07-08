@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import logica.*;
 
-public class VentanaHabitats extends JFrame{
+public class VentanaHabitats extends JPanel{
 
     private ArrayList<Habitat> habitatsComprados = new ArrayList<>();
     private ArrayList<PanelHabitat> panelesHabitats = new ArrayList<>();
@@ -15,11 +15,6 @@ public class VentanaHabitats extends JFrame{
     public VentanaHabitats(Jugador jugador){
         int tiempoTick = 1000;
         this.jugador = jugador;
-        setTitle("Tienda de Mascotas");
-        setSize(1024, 768);
-        setResizable(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
 
         setLayout(new BorderLayout());
         pestañasHabitats = new JTabbedPane();

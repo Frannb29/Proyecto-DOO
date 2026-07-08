@@ -13,7 +13,8 @@ public class VentanaPrincipal extends JFrame {
   
     private PanelSuperiorGlobal topBar;
     private JTabbedPane menuPestañas;
-    private PanelClientes panelClientes; 
+    private PanelClientes panelClientes;
+    private PanelInventario panelInventario;
 
     public VentanaPrincipal() {
         jugador = new Jugador();
@@ -31,7 +32,11 @@ public class VentanaPrincipal extends JFrame {
 
         menuPestañas=new JTabbedPane();
         menuPestañas.addTab("Tienda Suministros", new PanelTienda(jugador));
-        //aqui faltaria algo "como menuPestañas.addTab("Habitats", new VentanaHabitats(jugador).getContentPane());"
+
+        panelInventario = new PanelInventario();
+        add(panelInventario, BorderLayout.SOUTH);
+
+        menuPestañas.addTab("Mis Hábitats", new VentanaHabitats(jugador));
         
         add(menuPestañas, BorderLayout.CENTER);
 
@@ -47,7 +52,7 @@ public class VentanaPrincipal extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 topBar.actualizarDatos(jugador, reloj);
                 panelClientes.actualizarLista();
-                
+                panelInventario.actualizarCantidades();
                 repaint(); 
             }
         });
