@@ -19,15 +19,13 @@ public class PanelClientes extends JPanel {
     private VentanaHabitats ventanaHabitats;
 
     /**
-     * Arreglo estatico de coordenadas absolutas que define la posicion, el tamaño
-     * y la escala de los clientes en la fila para simular un efecto de profundidad.
+     * Arreglo estatico de coordenadas absolutas que define la posicion
+     * de los clientes en la fila.
      */
-    private final Rectangle[] posicionClientes = {
-            new Rectangle(200, 247, 150, 280),
-            new Rectangle(225, 247, 120, 220),
-            new Rectangle(245, 247, 95,  175),
-            new Rectangle(254, 247, 75,  140),
-            new Rectangle(265, 247, 60,  110)
+    private final Point[] posicionClientes = {
+        new Point(300, 190),  
+        new Point(180, 140), 
+        new Point(110, 140)
     };
 
     /**
@@ -45,7 +43,7 @@ public class PanelClientes extends JPanel {
         setPreferredSize(new Dimension(600, 400));
 
         try {
-            URL urlFondo=getClass().getResource("/Imagenes/placeholder_fondo.png");
+            URL urlFondo=getClass().getResource("/Imagenes/fondo_tienda.png");
             if (urlFondo!=null) {
                 imagenFondo = ImageIO.read(urlFondo);
             } else {
@@ -75,54 +73,61 @@ public class PanelClientes extends JPanel {
     }
 
     /**
-     * Limpia el contenedor y vuelve a generar los componentes de la interfaz.
-     * Renderiza el boton de atencion y mapea hasta un maximo de 5 clientes de la fila
-     * aplicando el calculo de perspectiva y sus globos de texto con el pedido correspondiente.
+     * Limpia el contenedor y vuelve a generar los componentes de la interfaz y
+     * renderiza el boton de atencion y mapea hasta un maximo de 3 clientes de la fila.
      */
     public void actualizarLista() {
         removeAll();
 
-        JButton botonAtender=new JButton("Atender Cliente");
-        botonAtender.setBounds(50, 560, 150, 40);
-        botonAtender.setBackground(new Color(76, 175, 80));
-        botonAtender.setForeground(Color.WHITE);
-        botonAtender.setFont(new Font("Arial", Font.BOLD, 14));
-        botonAtender.addActionListener(e -> {
-            Mascotas mascotaVendida=tienda.atenderCliente(this.jugador);
-            if (mascotaVendida==null) {
-                JOptionPane.showMessageDialog(this, "No tienes la mascota solicitada o no se puede vender.");
-            }
-            else {
-                this.ventanaHabitats.despacharMascotaVendida(mascotaVendida);
-                JOptionPane.showMessageDialog(this, "Cliente atendido y mascota entregada");
-            }
-            actualizarLista();
-        });
+        if(!tienda.getFilaClientes().isEmpty()) {
+            JButton botonAtender=new JButton("Atender");
+            botonAtender.setBounds(400, 270, 75, 20);
+            botonAtender.setBackground(Color.RED);
+            botonAtender.setForeground(Color.WHITE);
+            botonAtender.setFont(new Font("Arial", Font.BOLD, 9));
+            botonAtender.addActionListener(e -> {
+                Mascotas mascotaVendida=tienda.atenderCliente(this.jugador);
+                if (mascotaVendida==null) {
+                    JOptionPane.showMessageDialog(this, "No tienes la mascota solicitada o no se puede vender.");
+                }
+                else {
+                    this.ventanaHabitats.despacharMascotaVendida(mascotaVendida);
+                    JOptionPane.showMessageDialog(this, "Cliente atendido y mascota entregada");
+                }
+                actualizarLista();
+            });
 
-        add(botonAtender, 0);
+            add(botonAtender, 0);
+        }
 
         int posicionActual = 0;
         for (Cliente cliente : tienda.getFilaClientes()) {
             if (posicionActual>=posicionClientes.length) break;
 
-            Rectangle bounds=posicionClientes[posicionActual];
+            Point p=posicionClientes[posicionActual];
 
-            JLabel labelPedido=new JLabel("Pide: "+cliente.getPedido().name(), SwingConstants.CENTER);
-            labelPedido.setOpaque(true);
-            labelPedido.setBackground(Color.WHITE);
-            labelPedido.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            if (posicionActual==0) {
+                String textoPedido="Pide: " + cliente.getPedido().name();
+                JLabel labelPedido=new JLabel(textoPedido, SwingConstants.CENTER);
+                labelPedido.setOpaque(true);
+                labelPedido.setBackground(Color.WHITE);
+                labelPedido.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                
+                Font fuente=new Font("Arial", Font.BOLD, 11);
+                labelPedido.setFont(fuente);
 
-            int fontSize=Math.max(8, 12-(posicionActual*1));
-            labelPedido.setFont(new Font("Arial", Font.BOLD, fontSize));
+                FontMetrics fm=labelPedido.getFontMetrics(fuente);
+                int anchoTexto=fm.stringWidth(textoPedido) + 20; 
 
-            int globoX=bounds.x + (bounds.width / 2) - 40;
-            int globoY=bounds.y - 25;
-            labelPedido.setBounds(globoX, globoY, 80, 20);
+                int xGlobo=p.x+(100/2)-(anchoTexto/2);
+                labelPedido.setBounds(xGlobo, p.y - 35, anchoTexto, 25);
 
-            JLabel labelImagen=crearImagenCliente(bounds.width, bounds.height);
-            labelImagen.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+                add(labelPedido);
+            }
 
-            add(labelPedido);
+            JLabel labelImagen = crearImagenCliente();
+            labelImagen.setBounds(p.x, p.y, 100, 250); 
+
             add(labelImagen);
 
             posicionActual++;
@@ -133,20 +138,17 @@ public class PanelClientes extends JPanel {
     }
 
     /**
-     * Helper encargado de cargar y redimensionar el sprite o avatar del cliente
-     * según el tamaño dinamico requerido por su posicion en la fila.
-     * @param ancho Ancho destino del sprite en pixeles.
-     * @param alto  Alto destino del sprite en pixeles.
+     * Helper encargado de cargar el sprite o avatar del cliente.
      * @return Un objeto {@link JLabel} contenedor con la imagen escalada y centrada.
      */
-    private JLabel crearImagenCliente(int ancho, int alto) {
+    private JLabel crearImagenCliente() {
         JLabel label=new JLabel();
         try {
             URL urlImagen=getClass().getResource("/Imagenes/Cliente.png");
             if (urlImagen!=null) {
                 ImageIcon icono=new ImageIcon(urlImagen);
 
-                Image imagenAjustada=icono.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+                Image imagenAjustada=icono.getImage().getScaledInstance(100, 250, Image.SCALE_SMOOTH);
                 label.setIcon(new ImageIcon(imagenAjustada));
             }
         } catch (Exception e) {}

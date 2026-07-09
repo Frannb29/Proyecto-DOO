@@ -1,42 +1,78 @@
 package logica;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MascotaTest {
+    private Mascotas perro;
+
+    @BeforeEach
+    public void setUp() {
+        perro = MascotaFactory.crearMascota(TipoMascota.PERRO);
+    }
 
     @Test
     public void testCrearMascota() {
-        Mascotas nuevoPerro = MascotaFactory.crearMascota(TipoMascota.PERRO);
-        assertNotNull(nuevoPerro);
-        
-        assertEquals(TipoMascota.PERRO, nuevoPerro.getTipo()); 
-        assertEquals(Habitat.CASA, nuevoPerro.getHabitat());
+        assertNotNull(perro);
+        assertEquals(TipoMascota.PERRO, perro.getTipo()); 
+        assertEquals(Habitat.CASA, perro.getHabitat());
+        assertEquals(100, perro.getSalud()); 
     }
 
     @Test
-    public void testPasarTiempoBajaAlimentacion() {
-        Mascotas otroPerro = new Perro();
-        int alimentacionInicial = otroPerro.getAlimentacion(); 
-        
-        for(int i=0; i<5; i++){
-            otroPerro.pasarTiempo();
-        }
-        assertEquals(alimentacionInicial - 5, otroPerro.getAlimentacion());
-    }
-
-    @Test
-    public void testBajadeAtributosconelTiempo() {
-        Mascotas perro = new Perro(); // Inicialmente todo en 100
-        
+    public void testBajadeAtributosConElTiempo() {
         for(int i = 0; i < 5; i++){
             perro.pasarTiempo();
         }
-        
-        assertEquals(95, perro.getAlimentacion());
-        assertEquals(97, perro.getFelicidad());
-        assertEquals(95, perro.getHigiene());
-        assertEquals(98, perro.getSalud());
+    
+        assertEquals(96, perro.getAlimentacion()); // 100 - 4
+        assertEquals(96, perro.getFelicidad());    // 100 - 4
+        assertEquals(95, perro.getHigiene());      // 100 - 5
+        assertEquals(97, perro.getSalud());        // 100 - 3
     }
 
+    @Test
+    public void testAlimentarMascotaAumentaEstadisticas() {
+        perro.setAlimentacion(50);
+        perro.setSalud(50);
+        Alimento comidaPerro = new Alimento(TipoSuministro.ALIMENTO_PERRO);
+        
+        perro.alimentar(comidaPerro);
+        
+        assertEquals(100, perro.getAlimentacion());
+        assertEquals(70, perro.getSalud()); 
+    }
+
+    @Test
+    public void testSanarMascotaEnferma() {
+        perro.setSalud(20);
+        Medicina medicina = new Medicina(TipoSuministro.MEDICINA_MEDIANA); 
+        perro.sanar(medicina);
+        
+        assertEquals(70, perro.getSalud());
+        assertTrue(perro.getAlimentacion() < 100); 
+    }
+
+    @Test
+    public void testTransicionEstadoYExcepcionJugar() {
+  
+        perro.setAlimentacion(10); 
+        
+
+        for(int i=0; i<5; i++) { 
+            perro.pasarTiempo(); 
+        }
+        
+        assertThrows(EstadoMascotaInvalidoException.class, () -> {
+            perro.jugar();
+        });
+    }
+    
+    @Test
+    public void testLimpiarMascotaYaLimpiaLanzaExcepcion() {
+        assertThrows(EstadoMascotaInvalidoException.class, () -> {
+            perro.limpiar();
+        });
+    }
 }

@@ -36,6 +36,8 @@ public class VentanaPrincipal extends JFrame {
         reloj = simulador.getReloj();
         simulador.iniciarSimulacion();
 
+        setResizable(false);
+
         setTitle("Simulador de Tienda de Mascotas");
         setSize(1280, 720);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

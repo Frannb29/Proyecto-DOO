@@ -284,7 +284,7 @@ public class Tienda{
      * @param mascota La mascota que va a ser transferida.
      * @throws MascotaNoVendibleException Si las estadísticas o estado de la mascota prohiben su venta.
      */
-    public void venderMascota(Jugador jugador, Mascotas mascota) throws MascotaNoVendibleException {
+    private void venderMascota(Jugador jugador, Mascotas mascota) throws MascotaNoVendibleException {
         if(!mascota.sePuedeVender()){
             throw new MascotaNoVendibleException();
         }
@@ -314,6 +314,10 @@ public class Tienda{
      * @param cliente El cliente a añadir.
      */
     public void addCliente(Cliente cliente){
+        if(filaClientes.size()>=3){
+            System.out.println("La fila esta llena, un cliente se ha ido sin ser atendido");
+            return;
+        }
         filaClientes.offer(cliente);
         System.out.println("\nNuevo cliente en la fila, quiere un "+cliente.getPedido());
         System.out.println("Hay "+filaClientes.size()+" cliente(s) esperando");
