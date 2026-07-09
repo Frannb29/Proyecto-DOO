@@ -6,46 +6,72 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Panel grafico que representa la tienda del juego.
+ * Gestiona la navegacion por Alimentos y Medicinas,
+ * y una zona central con un contenedor con scroll que se reconstruye
+ * con las tarjetas de {@link PanelProducto} segun la seccion seleccionada.
+ */
 public class PanelTienda extends JPanel {
     private Jugador jugador;
     private JPanel panelCentral;
     private JScrollPane scroll;
+
+    /**
+     * Construye la ventana contenedora de la tienda.
+     * Diseña la barra de menú superior y prepara el espacio central con scroll cargando la seccion de alimentos por defecto al iniciar.
+     * @param jugador La instancia del jugador que realizará las compras en los subpaneles.
+     */
     public PanelTienda(Jugador jugador){
         this.jugador=jugador;
         this.setLayout(new BorderLayout());
+
         JPanel panelSuperior=new JPanel(new FlowLayout(FlowLayout.LEFT,20,15));
         panelSuperior.setBackground(new Color(225,170,85));
+
         JButton botonAlimento=new JButton("Alimento");
         JButton botonMedicina=new JButton("Medicina");
         panelSuperior.add(botonAlimento);
         panelSuperior.add(botonMedicina);
+
         panelCentral=new JPanel();
         panelCentral.setBackground(new Color(245,240,230));
+
         scroll=new JScrollPane(panelCentral);
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setBorder(null);
         scroll.getVerticalScrollBar().setUnitIncrement(16);
+
         botonAlimento.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
                 mostrarSeccionAlimentos();
             }
         });
+
         botonMedicina.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mostrarSeccionMedicinas();
             }
         });
+
         this.add(panelSuperior,BorderLayout.NORTH);
         this.add(scroll,BorderLayout.CENTER);
+
         mostrarSeccionAlimentos();
     }
+
+    /**
+     * Reconstruye el panel central vaciando los componentes
+     * y configurando una cuadrícula de dos columnas fijas para mostrar todo el catalogo disponible del juego.
+     */
     public void mostrarSeccionAlimentos(){
         panelCentral.removeAll();
         panelCentral.setLayout(new GridLayout(0, 2, 20, 20));
         panelCentral.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
         panelCentral.add(new PanelProducto("Comida Perro", TipoSuministro.ALIMENTO_PERRO,jugador));
         panelCentral.add(new PanelProducto("Comida Gato", TipoSuministro.ALIMENTO_GATO,jugador));
         panelCentral.add(new PanelProducto("Comida Conejo", TipoSuministro.ALIMENTO_CONEJO,jugador));
@@ -55,16 +81,24 @@ public class PanelTienda extends JPanel {
         panelCentral.add(new PanelProducto("Comida Pez", TipoSuministro.ALIMENTO_PEZ,jugador));
         panelCentral.add(new PanelProducto("Comida Pulpo", TipoSuministro.ALIMENTO_PULPO,jugador));
         panelCentral.add(new PanelProducto("Comida Tortuga", TipoSuministro.ALIMENTO_TORTUGA,jugador));
+
         panelCentral.revalidate();
         panelCentral.repaint();
     }
+
+    /**
+     * Reconstruye el panel central vaciando los componentes
+     * y configurando la cuadricula con el catalogo de las medicinas.
+     */
     public void mostrarSeccionMedicinas(){
         panelCentral.removeAll();
         panelCentral.setLayout(new GridLayout(0, 2, 20, 20));
         panelCentral.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
         panelCentral.add(new PanelProducto("Medicina Pequeña", TipoSuministro.MEDICINA_PEQUEÑA,jugador));
         panelCentral.add(new PanelProducto("Medicina Mediana", TipoSuministro.MEDICINA_MEDIANA,jugador));
         panelCentral.add(new PanelProducto("Medicina Grande", TipoSuministro.MEDICINA_GRANDE,jugador));
+
         panelCentral.revalidate();
         panelCentral.repaint();
     }

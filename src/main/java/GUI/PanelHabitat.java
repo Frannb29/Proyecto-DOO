@@ -7,6 +7,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
+/**
+ * Panel grafico representativo de un habitat especifico del juego.
+ * Gestiona la renderizacion del fondo del habitat, la barra de higiene global,
+ * y la disposicion visual de hasta 4 mascotas con sus respectivos paneles de control e indicadores de estado.
+ */
 public class PanelHabitat extends JPanel {
     private Image imagenFondo;
     private JPanel panelMascotas;
@@ -14,6 +19,11 @@ public class PanelHabitat extends JPanel {
     private JProgressBar barraHigieneHabitat;
     private Habitat habitat;
 
+    /**
+     * Construye un nuevo contenedor para el habitat.
+     * Configura los paneles de limpieza superiores, los indicadores de progreso y lee el recurso de imagen.
+     * @param habitat El habitat asociado a este componente visual.
+     */
     public PanelHabitat(Habitat habitat) {
         this.habitat = habitat;
         String ruta = habitat.getRuta();
@@ -58,6 +68,11 @@ public class PanelHabitat extends JPanel {
         }
     }
 
+    /**
+     * Dibuja el componente renderizando la imagen de fondo de este habitat
+     * adaptandola a las dimensiones reales de la ventana de forma elastica.
+     * @param g El contexto gráfico {@link Graphics} provisto por la JVM.
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -66,6 +81,14 @@ public class PanelHabitat extends JPanel {
         }
     }
 
+    /**
+     * Genera y agrega un nuevo panel de mascota dentro del habitat.
+     * Construye las barras individuales (Salud, Alimento, Felicidad, Higiene), los botones de accion
+     * y la imagen de la mascota utilizando restricciones {@link GridBagConstraints}.
+     * @param rutaImagen La ruta del recurso grafico de la mascota.
+     * @param mascota La instancia de la mascota a representar.
+     * @return true si la mascota pudo ser añadida visualmente, false si el habitat está lleno o el recurso falló.
+     */
     public boolean dibujarMascota(String rutaImagen, Mascotas mascota) {
 
         if (espaciosOcupados.size() >= 4) {
@@ -172,10 +195,10 @@ public class PanelHabitat extends JPanel {
         panelBotones.add(botonSuministro);
         panelBotones.add(botonLimpiar);
         panelBotones.add(botonJugar);
-        
+
         contenedorMascota.add(panelBotones);
         contenedorMascota.add(Box.createVerticalStrut(10));
-    
+
         contenedorMascota.add(txtAlimento);
         contenedorMascota.add(barraAlimento);
         contenedorMascota.add(Box.createVerticalStrut(4));
@@ -203,7 +226,7 @@ public class PanelHabitat extends JPanel {
         contenedorMascota.putClientProperty("barraSalud", barraSalud);
         contenedorMascota.putClientProperty("barraHigiene", barraHigiene);
 
-        contenedorMascota.setPreferredSize(new Dimension(130, 360)); 
+        contenedorMascota.setPreferredSize(new Dimension(130, 360));
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = espaciosOcupados.size();
@@ -223,6 +246,11 @@ public class PanelHabitat extends JPanel {
         return true;
     }
 
+    /**
+     * Crea un cuadro de dialogo interactivo que lee el stock de suministros disponibles en la tienda
+     * y le permite al jugador seleccionar un suministro para aplicar sobre la mascota.
+     * @param mascota La mascota que recibe el suministro.
+     */
     private void darSuministro(Mascotas mascota) {
         ArrayList<TipoSuministro> disponibles = obtenerSuministrosDisponibles();
 
@@ -255,11 +283,15 @@ public class PanelHabitat extends JPanel {
         }
     }
 
+    /**
+     * Evalaa las cantidades del inventario global de la tienda.
+     * Filtra solo las categorias que cuentan con al menos una unidad.
+     * @return Un listado de Tipos de suministros con stock activo.
+     */
     private ArrayList<TipoSuministro> obtenerSuministrosDisponibles() {
         Tienda tienda = Tienda.getInstancia();
         ArrayList<TipoSuministro> disponibles = new ArrayList<>();
-        
-        // Verifica uno por uno qué suministros tienen cantidad mayor a 0
+
         if (tienda.getCantidadAlimentoPerro() > 0) disponibles.add(TipoSuministro.ALIMENTO_PERRO);
         if (tienda.getCantidadAlimentoGato() > 0) disponibles.add(TipoSuministro.ALIMENTO_GATO);
         if (tienda.getCantidadAlimentoConejo() > 0) disponibles.add(TipoSuministro.ALIMENTO_CONEJO);
@@ -269,16 +301,18 @@ public class PanelHabitat extends JPanel {
         if (tienda.getCantidadAlimentoPez() > 0) disponibles.add(TipoSuministro.ALIMENTO_PEZ);
         if (tienda.getCantidadAlimentoPulpo() > 0) disponibles.add(TipoSuministro.ALIMENTO_PULPO);
         if (tienda.getCantidadAlimentoTortuga() > 0) disponibles.add(TipoSuministro.ALIMENTO_TORTUGA);
-        
+
         if (tienda.getCantidadMedicinaPequeña() > 0) disponibles.add(TipoSuministro.MEDICINA_PEQUEÑA);
         if (tienda.getCantidadMedicinaMediana() > 0) disponibles.add(TipoSuministro.MEDICINA_MEDIANA);
         if (tienda.getCantidadMedicinaGrande() > 0) disponibles.add(TipoSuministro.MEDICINA_GRANDE);
-        
+
         return disponibles;
     }
 
-    // -------------------------------------------------
-
+    /**
+     * Sincroniza y refresca los valores de todas las {@link JProgressBar}
+     * leyendo los atributos en tiempo real de la parte logica.
+     */
     public void actualizarBarras() {
         if (habitat != null && barraHigieneHabitat != null) {
             barraHigieneHabitat.setValue(habitat.getHigiene());
@@ -301,6 +335,11 @@ public class PanelHabitat extends JPanel {
         repaint();
     }
 
+    /**
+     * Elimina el contenedor visual de una mascota y reordena las coordenadas X de las mascotas restantes
+     * en el GridBagLayout para no dejar vacios visuales.
+     * @param mascotaVendida El panel {@link JPanel} de la mascota que fue vendida.
+     */
     public void removerMascota(JPanel mascotaVendida) {
         if (espaciosOcupados.contains(mascotaVendida)) {
             panelMascotas.remove(mascotaVendida);
@@ -325,6 +364,10 @@ public class PanelHabitat extends JPanel {
         }
     }
 
+    /**
+     * Obtiene el listado de paneles de las mascotas presentes en el habitat.
+     * @return Una {@link ArrayList} de subpaneles {@link JPanel}.
+     */
     public ArrayList<JPanel> getEspaciosOcupados() {
         return this.espaciosOcupados;
     }

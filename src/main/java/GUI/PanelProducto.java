@@ -6,15 +6,32 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
 
+/**
+ * Componente grafico que representa la tarjeta visual de un articulo a la venta.
+ * Maneja la visualización del nombre del suministro, la carga de su sprite y la gestion de eventos de compra.
+ */
 public class PanelProducto extends JPanel {
-    public PanelProducto(String nombre,TipoSuministro tipo,Jugador jugador){
+
+    /**
+     * Construye un bloque de producto interactivo para la interfaz de la tienda.
+     * Aplica un {@link BorderLayout} con espaciado vertical e inicializa el borde estilizado.
+     * @param nombre El texto descriptivo que se mostrará.
+     * @param tipo El tipo de suministro que define costos e identidades graficas.
+     * @param jugador La instancia de jugador que va a realizar la compra.
+     */
+    public PanelProducto(String nombre, TipoSuministro tipo, Jugador jugador){
         this.setLayout(new BorderLayout(0, 15));
         this.setBackground(Color.WHITE);
         this.setPreferredSize(new Dimension(160, 250));
-        this.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(210,210,210)), BorderFactory.createEmptyBorder(10,10,10,10)));
+        this.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(210,210,210)),
+                BorderFactory.createEmptyBorder(10,10,10,10)
+        ));
+
         JLabel labelNombre=new JLabel(nombre,SwingConstants.CENTER);
         JLabel labelImagen=new JLabel();
         labelImagen.setHorizontalAlignment(SwingConstants.CENTER);
+
         try{
             URL urlImagen=getClass().getResource("/Imagenes/"+tipo.name()+".png");
             if(urlImagen!=null){
@@ -30,10 +47,16 @@ public class PanelProducto extends JPanel {
         catch (Exception e){
             labelImagen.setText("Error");
         }
+
         JButton botonCompra=new JButton("$"+tipo.getPrecio());
         botonCompra.setBackground(new Color(139,196,74));
         botonCompra.setForeground(Color.WHITE);
+
         botonCompra.addActionListener(new ActionListener() {
+            /**
+             * Evalua el tipo de enumeracion para instanciar la subclase.
+             * @param e Objeto de evento de accian.
+             */
             @Override
             public void actionPerformed(ActionEvent e) {
                 try{
@@ -52,6 +75,7 @@ public class PanelProducto extends JPanel {
                 }
             }
         });
+
         this.add(labelNombre,BorderLayout.NORTH);
         this.add(labelImagen,BorderLayout.CENTER);
         this.add(botonCompra,BorderLayout.SOUTH);

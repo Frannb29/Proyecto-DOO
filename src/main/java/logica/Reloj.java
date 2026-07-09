@@ -56,7 +56,6 @@ public class Reloj {
      * Configura una tarea repetitiva que incrementa el contador y notifica a todos los observadores cada 1 segundo.
      */
     public void iniciarReloj(){
-        // El programador asigna un hilo en segundo plano dedicado a los ticks del reloj
         this.programador = Executors.newScheduledThreadPool(1);
 
         Runnable ticksReloj = () -> {
@@ -64,7 +63,6 @@ public class Reloj {
             this.segundosTranscurridos++;
         };
 
-        // Agenda la tarea para ejecutarse inmediatamente (delay 0) y repetirse cada segundo
         this.programador.scheduleAtFixedRate(ticksReloj, 0, 1, TimeUnit.SECONDS);
     }
 

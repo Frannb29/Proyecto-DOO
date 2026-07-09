@@ -4,6 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 
+/**
+ * Panel de interfaz grafica que representa la barra de inventario del jugador.
+ * Muestra el conteo de suministros en tiempo real, permite desplazarse horizontalmente
+ * mediante un scroll de botones con iconos y gestiona la logica
+ * de selección y validacion de consumibles aplicados a las mascotas.
+ */
 public class PanelInventario extends JPanel {
     private JButton botonAlimentoPerro;
     private JButton botonAlimentoGato;
@@ -17,6 +23,12 @@ public class PanelInventario extends JPanel {
     private JButton botonMedicinaPequeña;
     private JButton botonMedicinaMediana;
     private JButton botonMedicinaGrande;
+
+    /**
+     * Construye e inicializa el panel de inventario.
+     * Diseña la barra inferior usando {@link GridLayout} dentro de un {@link JScrollPane} horizontal.
+     * Inicializa los botones de productos con sus respectivas imagenes.
+     */
     public PanelInventario(){
         this.setLayout(new BorderLayout());
         this.setBackground(new Color(60,60,60));
@@ -24,6 +36,7 @@ public class PanelInventario extends JPanel {
         panelBotones.setLayout(new GridLayout(1,0,15,10));
         panelBotones.setBackground(new Color(60,60,60));
         panelBotones.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+
         botonAlimentoPerro=crearBoton("/Imagenes/ALIMENTO_PERRO.png");
         botonAlimentoGato=crearBoton("/Imagenes/ALIMENTO_GATO.png");
         botonAlimentoConejo=crearBoton("/Imagenes/ALIMENTO_CONEJO.png");
@@ -36,6 +49,7 @@ public class PanelInventario extends JPanel {
         botonMedicinaPequeña=crearBoton("/Imagenes/MEDICINA_PEQUEÑA.png");
         botonMedicinaMediana=crearBoton("/Imagenes/MEDICINA_MEDIANA.png");
         botonMedicinaGrande=crearBoton("/Imagenes/MEDICINA_GRANDE.png");
+
         panelBotones.add(botonAlimentoPerro);
         panelBotones.add(botonAlimentoGato);
         panelBotones.add(botonAlimentoConejo);
@@ -48,14 +62,24 @@ public class PanelInventario extends JPanel {
         panelBotones.add(botonMedicinaPequeña);
         panelBotones.add(botonMedicinaMediana);
         panelBotones.add(botonMedicinaGrande);
+
         JScrollPane scroll=new JScrollPane(panelBotones);
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         scroll.setBorder(null);
         scroll.getHorizontalScrollBar().setUnitIncrement(16);
         this.add(scroll,BorderLayout.CENTER);
+
         configurarAcciones();
     }
+
+    /**
+     * Helper encargado de instanciar un boton de inventario.
+     * Carga de manera segura la imagen desde los recursos y alinea el texto numerico
+     * en la base central del control grafico.
+     * @param rutaImagen Ruta del archivo de imagen.
+     * @return Un objeto {@link JButton}.
+     */
     public JButton crearBoton(String rutaImagen){
         JButton boton=new JButton("0");
         boton.setPreferredSize(new Dimension(80,80));
@@ -80,6 +104,11 @@ public class PanelInventario extends JPanel {
         boton.setForeground(Color.BLACK);
         return boton;
     }
+
+    /**
+     * Consulta las cantidades dentro de los depositos de la tienda
+     * y actualiza el texto visible de todos los botones con los valores numericos actuales.
+     */
     public void actualizarCantidades(){
         Tienda tienda = Tienda.getInstancia();
         botonAlimentoPerro.setText(String.valueOf(tienda.getCantidadAlimentoPerro()));
@@ -95,6 +124,10 @@ public class PanelInventario extends JPanel {
         botonMedicinaMediana.setText(String.valueOf(tienda.getCantidadMedicinaMediana()));
         botonMedicinaGrande.setText(String.valueOf(tienda.getCantidadMedicinaGrande()));
     }
+
+    /**
+     * Vincula los Listeners de cada boton mapeandolas con su correspondiente enumeracion de suministro.
+     */
     private void configurarAcciones(){
         botonAlimentoPerro.addActionListener(e -> procesarUsoSuministro(TipoSuministro.ALIMENTO_PERRO));
         botonAlimentoGato.addActionListener(e -> procesarUsoSuministro(TipoSuministro.ALIMENTO_GATO));
@@ -109,6 +142,14 @@ public class PanelInventario extends JPanel {
         botonMedicinaMediana.addActionListener(e -> procesarUsoSuministro(TipoSuministro.MEDICINA_MEDIANA));
         botonMedicinaGrande.addActionListener(e -> procesarUsoSuministro(TipoSuministro.MEDICINA_GRANDE));
     }
+
+    /**
+     * Realiza la validacian para consumir un suministro del inventario.
+     * Despliega un dialogo para que el jugador elija el destinatario entre las mascotas.
+     * Si la alimentacion no coincide con el tipo de mascota o si la operacion se cancela en la UI,
+     * devuelve el suministro al almacan.
+     * @param tipo El tipo de suministro que define el item seleccionado.
+     */
     private void procesarUsoSuministro(TipoSuministro tipo){
         Tienda tienda=Tienda.getInstancia();
         if(tienda.getMascotas().isEmpty()){

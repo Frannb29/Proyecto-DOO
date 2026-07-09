@@ -3,9 +3,13 @@ package GUI;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-
 import logica.*;
 
+/**
+ * Panel grafico encargado de mostrar los habitats.
+ * Utiliza un contenedor de pestañas {@link JTabbedPane} para cambiar entre los diferentes habitats.
+ * Permite la compra y validacion de las mascotas y habitats.
+ */
 public class VentanaHabitats extends JPanel{
 
     private ArrayList<Habitat> habitatsComprados = new ArrayList<>();
@@ -13,6 +17,13 @@ public class VentanaHabitats extends JPanel{
     private JTabbedPane pestañasHabitats;
     private Jugador jugador;
     private Simulador simulador;
+
+    /**
+     * Construye e inicializa el centro de control de los habitats del simulador.
+     * Coloca el primer habitat base por defecto y los botones de compra de mascotas y habitats.
+     * @param jugador Instancia del jugador.
+     * @param simulador Coordina la instanciacion de las mascotas.
+     */
     public VentanaHabitats(Jugador jugador, Simulador simulador){
         int tiempoTick = 1000;
         this.jugador = jugador;
@@ -32,52 +43,46 @@ public class VentanaHabitats extends JPanel{
         panelTienda.setPreferredSize(new Dimension(1024, 100));
 
         JButton botonComprar = new JButton("Comprar Mascota");
- 
         JButton botonComprarHabitat = new JButton("Comprar Habitat");
+
         panelTienda.add(botonComprar);
         panelTienda.add(botonComprarHabitat);
         add(panelTienda, BorderLayout.SOUTH);
+
         botonComprar.addActionListener(e -> comprarMascotaHabitat());
         botonComprarHabitat.addActionListener(e -> compraHabitat());
     }
+
+    /**
+     * Registra un habitat en las colecciones, inicializa su panel de renderizado
+     * y agrega una nueva pestaña al contenedor.
+     * @param habitat El habitat correspondiente a desbloquear.
+     */
     private void desbloquearHabitat(Habitat habitat){
         habitatsComprados.add(habitat);
         PanelHabitat panelIndividual = new PanelHabitat(habitat);
         panelesHabitats.add(panelIndividual);
         pestañasHabitats.addTab(habitat.name(), panelIndividual);
-
     }
+
+    /**
+     * Recibe una mascota ya instanciada, resuelve la ruta de su sprite e itera sobre las pestañas para su renderizado
+     * en el {@link PanelHabitat} correspondiente.
+     * @param nuevaMascota La nueva mascota que se agregará.
+     */
     public void agregarMascota(Mascotas nuevaMascota){
         String rutaImagen = "/Imagenes/perro.png";
 
         switch (nuevaMascota.getTipo()) {
-            case PERRO:
-                rutaImagen = "/Imagenes/perro.png";
-                break;
-            case GATO:
-                rutaImagen = "/Imagenes/Gato.png";
-                break;
-            case CONEJO:
-                rutaImagen = "/Imagenes/Conejo.png";
-                break;
-            case HAMSTER:
-                rutaImagen = "/Imagenes/Hamster.png";
-                break;
-            case BULBASAUR:
-                rutaImagen = "/Imagenes/Bulbasaur.png";
-                break;
-            case EEVEE:
-                rutaImagen = "/Imagenes/Eevee.png";
-                break;
-            case PEZ_DORADO:
-                rutaImagen = "/Imagenes/pez_dorado.png";
-                break;
-            case PULPO:
-                rutaImagen = "/Imagenes/pulpo.png";
-                break;
-            case TORTUGA:
-                rutaImagen = "/Imagenes/tortuga.png";
-                break;
+            case PERRO: rutaImagen = "/Imagenes/perro.png"; break;
+            case GATO: rutaImagen = "/Imagenes/Gato.png"; break;
+            case CONEJO: rutaImagen = "/Imagenes/Conejo.png"; break;
+            case HAMSTER: rutaImagen = "/Imagenes/Hamster.png"; break;
+            case BULBASAUR: rutaImagen = "/Imagenes/Bulbasaur.png"; break;
+            case EEVEE: rutaImagen = "/Imagenes/Eevee.png"; break;
+            case PEZ_DORADO: rutaImagen = "/Imagenes/pez_dorado.png"; break;
+            case PULPO: rutaImagen = "/Imagenes/pulpo.png"; break;
+            case TORTUGA: rutaImagen = "/Imagenes/tortuga.png"; break;
         }
         Habitat habitatRequerido = nuevaMascota.getHabitat();
 
@@ -92,9 +97,14 @@ public class VentanaHabitats extends JPanel{
             }
         }
     }
+
+    /**
+     * Compara todos los habitat con los habitats ya desbloqueadas, filtra un menu
+     * de seleccion de items disponibles y procesa la compra del nuevo habitat capturando excepciones.
+     */
     private void compraHabitat(){
         Habitat[] totalHabitats = Habitat.values();
-        
+
         ArrayList<Habitat> habitatsDisponibles=new ArrayList<>();
         for (Habitat h : totalHabitats) {
             if (!habitatsComprados.contains(h)) {
@@ -108,7 +118,7 @@ public class VentanaHabitats extends JPanel{
         }
 
         Habitat[] opciones=habitatsDisponibles.toArray(new Habitat[0]);
-        
+
         Habitat elegido=(Habitat) JOptionPane.showInputDialog(
                 this,
                 "Selecciona el hábitat que deseas comprar:",
@@ -130,6 +140,11 @@ public class VentanaHabitats extends JPanel{
             }
         }
     }
+
+    /**
+     * Analiza el nombre de la pestaña que el jugador tiene seleccionada actualmente para mostrar solo las mascotas de ese habitat
+     * y ejecuta el proceso de compra a travas del simulador, gestionando excepciones.
+     */
     private void comprarMascotaHabitat() {
         PanelHabitat habitatActivo = (PanelHabitat) pestañasHabitats.getSelectedComponent();
 
@@ -183,7 +198,10 @@ public class VentanaHabitats extends JPanel{
             }
         }
     }
-    
+
+    /**
+     * Ejecuta una actualizacion que recorre todos los subpaneles de habitats para sincronizar el estado visual de sus indicadores.
+     */
     public void actualizarHabitat() {
         for(PanelHabitat panel : panelesHabitats){
             panel.actualizarBarras();
