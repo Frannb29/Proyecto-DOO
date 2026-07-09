@@ -1,5 +1,8 @@
 package logica;
 
+/**
+ * Tipos de mascotas disponibles en el juego.
+ */
 public enum TipoMascota{
     BULBASAUR,
     EEVEE,

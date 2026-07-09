@@ -1,6 +1,17 @@
 package logica;
 
+/**
+ * Fabrica encargada de la instanciacion de los diferentes tipos de mascotas.
+ * Se aplica el patrón Factory para centralizar la creacion de mascotas.
+ */
 public class MascotaFactory {
+
+    /**
+     * Crea y devuelve una nueva instancia de una mascota segun el tipo especificado.
+     * @param tipo Tipo de mascota que se quiere crear.
+     * @return nueva mascota del tipo solicitada o null si el parametro es null.
+     * @throws IllegalArgumentException Si el tipo de mascota recibido no coincide con ninguna de las opciones validas.
+     */
     public static Mascotas crearMascota(TipoMascota tipo){
         if (tipo == null){
             return null;

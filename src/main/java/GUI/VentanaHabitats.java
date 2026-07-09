@@ -181,9 +181,6 @@ public class VentanaHabitats extends JPanel{
             catch (HabitatLlenoExcepcion e){
                 JOptionPane.showMessageDialog(this, "El habitat " + nombrePestaña + " está lleno");
             }
-            catch (HabitatBloqueadoException e){
-                JOptionPane.showMessageDialog(this, "El habitat " + nombrePestaña + " no lo has comprado");
-            }
         }
     }
     

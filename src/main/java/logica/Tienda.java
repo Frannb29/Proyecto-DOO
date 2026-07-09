@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
+/**
+ * Gestiona el inventario del juego y el stock de suministros.
+ * Aplica el patrón Singleton para asegurar una unica instancia global.
+ */
 public class Tienda{
     private static Tienda instancia;
 
@@ -22,6 +26,9 @@ public class Tienda{
     private ArrayList<Mascotas> mascotas;
     private Queue<Cliente> filaClientes;
 
+    /**
+     * Constructor privado que inicializa de forma las colecciones, depositos y estructuras de control de la tienda.
+     */
     private Tienda(){
         stockAlimentoPerro=new Deposito<Alimento>();
         stockAlimentoGato=new Deposito<Alimento>();
@@ -40,14 +47,24 @@ public class Tienda{
         filaClientes=new LinkedList<>();
     }
 
+    /**
+     * Obtiene la unica instancia activa de la tienda y si no ha sido creada la instancia.
+     * @return Instancia unica de la tienda.
+     */
     public static Tienda getInstancia(){
         if(instancia==null){
             instancia=new Tienda();
         }
-        
+
         return instancia;
     }
 
+    /**
+     * Procesa la compra de un suministro y lo añade a su respectivo deposito segun su tipo y especie correspondiente.
+     * @param jugador El jugador que realiza la compra.
+     * @param objeto  El suministro que se desea adquirir.
+     * @throws PagoInsuficienteException Si el presupuesto del jugador es menor al valor del suministro.
+     */
     public void comprarSuministros(Jugador jugador, Suministros objeto) throws PagoInsuficienteException{
         int valor=objeto.getValor();
         int presupuesto=jugador.getPresupuesto();
@@ -102,12 +119,18 @@ public class Tienda{
         }
     }
 
-    public Mascotas comprarMascota(TipoMascota tipo, Jugador jugador)throws PagoInsuficienteException, HabitatLlenoExcepcion, HabitatBloqueadoException{
+    /**
+     * Permite al jugador comprar una nueva mascota.
+     * Realiza verificaciones de presupuesto y limites del habitat asignado.
+     * @param tipo Tipo de mascota que el jugador quiere comprar.
+     * @param jugador El jugador que realiza la compra.
+     * @return La nueva instancia de la mascota añadida.
+     * @throws PagoInsuficienteException Si el jugador no cuenta con el dinero necesario.
+     * @throws HabitatLlenoExcepcion Si el habitat correspondiente está en su capacidad maxima.
+     */
+    public Mascotas comprarMascota(TipoMascota tipo, Jugador jugador)throws PagoInsuficienteException, HabitatLlenoExcepcion{
         Mascotas nuevaMascota = MascotaFactory.crearMascota(tipo);
-        Habitat habitatRequerido = nuevaMascota.getHabitat();
-        if (!jugador.tieneHabitat(habitatRequerido)) {
-            throw new HabitatBloqueadoException("No puedes comprar esta mascota porque no has adquirido el hábitat " + habitatRequerido.getNombre());
-        }
+
         if(jugador.getPresupuesto() < nuevaMascota.getPrecio()){
             throw new PagoInsuficienteException();
         }
@@ -118,6 +141,13 @@ public class Tienda{
         addMascota(nuevaMascota);
         return nuevaMascota;
     }
+
+    /**
+     * Extrae y devuelve un suministro especifico desde sus depositos.
+     * @param tipo Tipo de suministro que se quiere extraer.
+     * @return El suministro removido del stock.
+     * @throws DepositoVacioException Si el deposito seleccionado no cuenta con unidades disponibles.
+     */
     public Suministros seleccionarSuministro(TipoSuministro tipo) throws DepositoVacioException{
         if(tipo==TipoSuministro.ALIMENTO_PERRO){
             if(stockAlimentoPerro.getSize()==0){
@@ -194,6 +224,13 @@ public class Tienda{
         return null;
     }
 
+    /**
+     * Ejecuta la conexion entre la peticion de un cliente y el inventario disponible.
+     * Valida que la mascota sea vendibole.
+     * @param cliente El cliente que desea comprar.
+     * @param jugador El jugador que recibirá las ganancias.
+     * @return La instancia de la mascota vendida o null si la venta falla.
+     */
     private Mascotas procesarVenta(Cliente cliente, Jugador jugador){
         TipoMascota pedido=cliente.getPedido();
         Mascotas mascotaAEntregar=null;
@@ -223,6 +260,11 @@ public class Tienda{
         }
     }
 
+    /**
+     * Remueve de la fila al primer cliente en espera y procesa su solicitud de compra.
+     * @param jugador El jugador a cargo.
+     * @return Mascota entregada o null si la fila está vacia.
+     */
     public Mascotas atenderCliente(Jugador jugador){
         if (filaClientes.isEmpty()){
             System.out.println("La tienda esta tranquila. No hay clientes para atender");
@@ -232,10 +274,17 @@ public class Tienda{
         Cliente clienteAtendido=filaClientes.poll();
         System.out.println("Atendiendo al primer cliente de la fila...");
         return procesarVenta(clienteAtendido, jugador);
-        
+
     }
 
-    private void venderMascota(Jugador jugador, Mascotas mascota) throws MascotaNoVendibleException {
+    /**
+     * Finaliza la venta de una mascota removiendola de la tienda y aumentando el presupuesto
+     * del jugador con el precio de venta.
+     * @param jugador El jugador beneficiario de la venta.
+     * @param mascota La mascota que va a ser transferida.
+     * @throws MascotaNoVendibleException Si las estadísticas o estado de la mascota prohiben su venta.
+     */
+    public void venderMascota(Jugador jugador, Mascotas mascota) throws MascotaNoVendibleException {
         if(!mascota.sePuedeVender()){
             throw new MascotaNoVendibleException();
         }
@@ -243,6 +292,12 @@ public class Tienda{
         this.mascotas.remove(mascota);
     }
 
+    /**
+     * Permite al jugador comprar un nuevo habitat descontando su precio del presupuesto.
+     * @param habitat El habitat seleccionado para la compra.
+     * @param jugador El jugador comprador.
+     * @throws PagoInsuficienteException Si el presupuesto no alcanza para la compra.
+     */
     public void comprarHabitat(Habitat habitat, Jugador jugador)throws PagoInsuficienteException{
         int costo = habitat.getPrecio();
         if(costo > jugador.getPresupuesto()){
@@ -250,17 +305,25 @@ public class Tienda{
         }
         else{
             jugador.descontarPresupuesto(costo);
-            jugador.registrarHabitat(habitat);
             System.out.println("Habitat " + habitat.getNombre() + " comprado con exito");
         }
     }
 
+    /**
+     * Registra el ingreso de un nuevo cliente a la fila de atencion de la tienda.
+     * @param cliente El cliente a añadir.
+     */
     public void addCliente(Cliente cliente){
         filaClientes.offer(cliente);
         System.out.println("\nNuevo cliente en la fila, quiere un "+cliente.getPedido());
         System.out.println("Hay "+filaClientes.size()+" cliente(s) esperando");
     }
 
+    /**
+     * Recorre el inventario para calcular cuantas mascotas hay en un habitat.
+     * @param habitat El habitat que se desea consultar.
+     * @return Numero total de mascotas en ese habitat.
+     */
     private int contadorMascotas(Habitat habitat){
         int contador = 0;
         for(Mascotas m :this.mascotas){
@@ -270,6 +333,12 @@ public class Tienda{
         }
         return contador;
     }
+
+    /**
+     * Busca y remueve la primera medicina disponible en stock de la pequeña a la grande.
+     * @return La medicina a aplicar.
+     * @throws DepositoVacioException Si no queda ninguna unidad de medicina en la tienda.
+     */
     public Suministros sacarMedicina() throws DepositoVacioException {
         if(stockMedicinaPequeña.getSize() > 0){
             return stockMedicinaPequeña.get();
@@ -282,50 +351,49 @@ public class Tienda{
         }
         throw new DepositoVacioException("medicinas");
     }
+
+    /**
+     * Añade una mascota a la lista de registros de la tienda.
+     * @param mascota La mascota a almacenar.
+     */
     public void addMascota(Mascotas mascota){
         mascotas.add(mascota);
     }
 
-    public int getCantidadAlimentoPerro() {
-        return stockAlimentoPerro.getSize();
-    }
-    public int getCantidadAlimentoGato() {
-        return stockAlimentoGato.getSize();
-    }
-    public int getCantidadAlimentoConejo() {
-        return stockAlimentoConejo.getSize();
-    }
-    public int getCantidadAlimentoHamster() {
-        return stockAlimentoHamster.getSize();
-    }
-    public int getCantidadAlimentoBulbasaur() {
-        return stockAlimentoBulbasaur.getSize();
-    }
-    public int getCantidadAlimentoEevee() {
-        return stockAlimentoEevee.getSize();
-    }
-    public int getCantidadAlimentoTortuga() {
-        return stockAlimentoTortuga.getSize();
-    }
-    public int getCantidadAlimentoPulpo() {
-        return stockAlimentoPulpo.getSize();
-    }
-    public int getCantidadAlimentoPez() {
-        return stockAlimentoPez.getSize();
-    }
-    public int getCantidadMedicinaPequeña() {
-        return stockMedicinaPequeña.getSize();
-    }
-    public int getCantidadMedicinaMediana() {
-        return stockMedicinaMediana.getSize();
-    }
-    public int getCantidadMedicinaGrande() {
-        return stockMedicinaGrande.getSize();
-    }
-    public ArrayList<Mascotas> getMascotas(){
-        return mascotas;
-    }
-    public Queue<Cliente> getFilaClientes() {
-        return filaClientes;
-    }
+    /** @return Cantidad actual en stock de alimentos de perro. */
+    public int getCantidadAlimentoPerro() { return stockAlimentoPerro.getSize(); }
+    /** @return Cantidad actual en stock de alimentos de gato. */
+    public int getCantidadAlimentoGato() { return stockAlimentoGato.getSize(); }
+    /** @return Cantidad actual en stock de alimentos de conejo. */
+    public int getCantidadAlimentoConejo() { return stockAlimentoConejo.getSize(); }
+    /** @return Cantidad actual en stock de alimentos de hamster. */
+    public int getCantidadAlimentoHamster() { return stockAlimentoHamster.getSize(); }
+    /** @return Cantidad actual en stock de alimentos de bulbasaur. */
+    public int getCantidadAlimentoBulbasaur() { return stockAlimentoBulbasaur.getSize(); }
+    /** @return Cantidad actual en stock de alimentos de eevee. */
+    public int getCantidadAlimentoEevee() { return stockAlimentoEevee.getSize(); }
+    /** @return Cantidad actual en stock de alimentos de tortuga. */
+    public int getCantidadAlimentoTortuga() { return stockAlimentoTortuga.getSize(); }
+    /** @return Cantidad actual en stock de alimentos de pulpo. */
+    public int getCantidadAlimentoPulpo() { return stockAlimentoPulpo.getSize(); }
+    /** @return Cantidad actual en stock de alimentos de pez dorado. */
+    public int getCantidadAlimentoPez() { return stockAlimentoPez.getSize(); }
+    /** @return Cantidad actual en stock de medicinas de tamaño pequeño. */
+    public int getCantidadMedicinaPequeña() { return stockMedicinaPequeña.getSize(); }
+    /** @return Cantidad actual en stock de medicinas de tamaño mediano. */
+    public int getCantidadMedicinaMediana() { return stockMedicinaMediana.getSize(); }
+    /** @return Cantidad actual en stock de medicinas de tamaño grande. */
+    public int getCantidadMedicinaGrande() { return stockMedicinaGrande.getSize(); }
+
+    /**
+     * Obtiene la lista de mascotas en la tienda.
+     * @return Un Arraylist con las mascotas actuales.
+     */
+    public ArrayList<Mascotas> getMascotas(){ return mascotas; }
+
+    /**
+     * Obtiene la fila de clientes que esperan ser atendidos.
+     * @return Una estructura Queue ordenada con los clientes en fila.
+     */
+    public Queue<Cliente> getFilaClientes() { return filaClientes; }
 }

@@ -6,57 +6,91 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Motor de tiempo principal del juego (Clase Sujeto en el patrón Observer).
+ * Gestiona un temporizador asincrono que corre en segundo plano y notifica
+ * periodicamente a todos los componentes registrados como observadores.
+ */
 public class Reloj {
     private List<ObservadorReloj> observadores;
     private ScheduledExecutorService programador;
     private int segundosTranscurridos;
 
+    /**
+     * Constructor que inicializa el reloj con un contador en 0.
+     * Utiliza {@link CopyOnWriteArrayList} para permitir la adicion o eliminacion de observadores
+     * de forma segura si se interactaa desde multiples hilos.
+     */
     public Reloj(){
-        observadores=new CopyOnWriteArrayList<>();
-        segundosTranscurridos=0;
+        this.observadores = new CopyOnWriteArrayList<>();
+        this.segundosTranscurridos = 0;
     }
 
+    /**
+     * Registra un nuevo componente para escuchar los eventos de tiempo del reloj.
+     * * @param observador El {@link ObservadorReloj} que se desea añadir a la lista de notificacion.
+     */
     public void addObservador(ObservadorReloj observador){
-        observadores.add(observador);
+        this.observadores.add(observador);
     }
 
-
+    /**
+     * Elimina a un componente de la lista de alertas, dejando de recibir eventos de tiempo.
+     * * @param observador El {@link ObservadorReloj} que se desea remover.
+     */
     public void removeObservador(ObservadorReloj observador){
-        observadores.remove(observador);
+        this.observadores.remove(observador);
     }
 
-    //llama al método pasarTiempo() de cada observador (funciona distinto si es GeneradorCliente o una mascota)
+    /**
+     * Recorre la lista de observadores registrados y ejecuta pasarTiempo.
+     */
     private void notificarObservadores(){
-        for(ObservadorReloj observador : observadores){
+        for(ObservadorReloj observador : this.observadores){
             observador.pasarTiempo();
         }
     }
 
+    /**
+     * Inicia el contador del reloj en un hilo secundario independiente.
+     * Configura una tarea repetitiva que incrementa el contador y notifica a todos los observadores cada 1 segundo.
+     */
     public void iniciarReloj(){
-        //programador es un hilo que se ejecuta en segundo plano y se encarga de ejecutar el metodo notificarObservadores cada 1 seg.
-        programador=Executors.newScheduledThreadPool(1);
+        // El programador asigna un hilo en segundo plano dedicado a los ticks del reloj
+        this.programador = Executors.newScheduledThreadPool(1);
 
-        Runnable ticksReloj=() -> {
-            notificarObservadores();
-            segundosTranscurridos++;
+        Runnable ticksReloj = () -> {
+            this.notificarObservadores();
+            this.segundosTranscurridos++;
         };
 
-        //por cada unidad(en este caso 1 seg.) se ejecuta lo que tiene dentro ticksReloj
-        programador.scheduleAtFixedRate(ticksReloj, 0, 1, TimeUnit.SECONDS);
+        // Agenda la tarea para ejecutarse inmediatamente (delay 0) y repetirse cada segundo
+        this.programador.scheduleAtFixedRate(ticksReloj, 0, 1, TimeUnit.SECONDS);
     }
 
+    /**
+     * Detiene la ejecucion del temporizador en segundo plano y libera el hilo
+     * asignado por el planificador si este se encuentra activo.
+     */
     public void detenerReloj(){
-        if (programador!=null && !programador.isShutdown()) {
-            programador.shutdown();
+        if (this.programador != null && !this.programador.isShutdown()) {
+            this.programador.shutdown();
         }
     }
 
+    /**
+     * Obtiene la lista actual de todos los observadores que están escuchando al reloj.
+     * * @return Lista de tipo {@link ObservadorReloj}.
+     */
     public List<ObservadorReloj> getObservadores(){
-        return observadores;
+        return this.observadores;
     }
 
+    /**
+     * Obtiene el tiempo total desde que se inició el reloj por ultima vez.
+     * * @return Cantidad de segundos transcurridos.
+     */
     public int getSegundosTranscurridos(){
-        return segundosTranscurridos;
+        return this.segundosTranscurridos;
     }
-    
 }

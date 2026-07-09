@@ -1,9 +1,18 @@
 package logica;
 
+/**
+ * Clase Alimento que conecta el alimento con el tipo de mascota al que corresponde.
+ * Hereda de la clase Suministros.
+ */
 public class Alimento extends Suministros{
     private TipoMascota mascotaDestino;
     private int comida;
 
+    /**
+     * Constructor que inicializa el alimento e incrementa en 80 los puntos de comida.
+     * Asigna a la mascota destino segun el tipo de suministro.
+     * @param tipo tipo de Suministro que define el alimento.
+     */
     public Alimento(TipoSuministro tipo){
         super(tipo);
         this.comida=80;
@@ -40,12 +49,27 @@ public class Alimento extends Suministros{
                 break;
         }
     }
+
+    /**
+     * Obtiene el tipo de mascota que recibe el alimento.
+     * @return TipoMascota correspondiente.
+     */
     public TipoMascota getTipoMascota(){
         return mascotaDestino;
     }
+
+    /**
+     * Obtiene los puntos de alimentacion que otorga el alimento.
+     * @return Cantidad de puntos de comida (80).
+     */
     public int getComida(){
         return comida;
     }
+
+    /**
+     * Aplica el uso del alimento en una mascota especifica.
+     * @param mascota Mascota que va a consumir el alimento.
+     */
     @Override
     public void usar(Mascotas mascota){
         mascota.alimentar(this);
