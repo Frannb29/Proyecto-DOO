@@ -16,6 +16,7 @@ public class PanelClientes extends JPanel {
     private Tienda tienda;
     private Jugador jugador;
     private Image imagenFondo;
+    private VentanaHabitats ventanaHabitats;
 
     /**
      * Arreglo estatico de coordenadas absolutas que define la posicion, el tamaño
@@ -35,9 +36,10 @@ public class PanelClientes extends JPanel {
      * y carga el recurso grafico del fondo de la tienda.
      * @param jugador El jugador que recibirá el dinero de las ventas.
      */
-    public PanelClientes(Jugador jugador) {
+    public PanelClientes(Jugador jugador, VentanaHabitats ventanaHabitats) {
         this.jugador=jugador;
         this.tienda=Tienda.getInstancia();
+        this.ventanaHabitats = ventanaHabitats;
 
         setLayout(null);
         setPreferredSize(new Dimension(600, 400));
@@ -89,6 +91,10 @@ public class PanelClientes extends JPanel {
             Mascotas mascotaVendida=tienda.atenderCliente(this.jugador);
             if (mascotaVendida==null) {
                 JOptionPane.showMessageDialog(this, "No tienes la mascota solicitada o no se puede vender.");
+            }
+            else {
+                this.ventanaHabitats.despacharMascotaVendida(mascotaVendida);
+                JOptionPane.showMessageDialog(this, "Cliente atendido y mascota entregada");
             }
             actualizarLista();
         });

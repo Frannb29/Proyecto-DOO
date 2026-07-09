@@ -56,7 +56,7 @@ public class VentanaPrincipal extends JFrame {
 
         add(menuPestañas, BorderLayout.CENTER);
 
-        panelClientes=new PanelClientes(jugador);
+        panelClientes=new PanelClientes(jugador, ventanaHabitats);
         add(panelClientes, BorderLayout.EAST);
 
         iniciarTimerGUI();

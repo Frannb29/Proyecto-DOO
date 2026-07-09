@@ -207,4 +207,30 @@ public class VentanaHabitats extends JPanel{
             panel.actualizarBarras();
         }
     }
+
+    /**
+     * Busca el panel del hábitat correspondiente a la mascota vendida y remueve
+     * su componente gráfico, liberando de forma automática la capacidad visual.
+     * @param mascotaLogica La instancia de la mascota que se lleva el cliente.
+     */
+    public void despacharMascotaVendida(Mascotas mascotaLogica) {
+        Habitat habitatDeMascota = mascotaLogica.getHabitat();
+        for(PanelHabitat panelHabitat : panelesHabitats){
+            if(panelHabitat.getEspaciosOcupados() != null){
+                JPanel contenedorEncontrado = null;
+
+                for(JPanel contenedorMascota : panelHabitat.getEspaciosOcupados()){
+                    Mascotas m = (Mascotas) contenedorMascota.getClientProperty("mascota");
+                    if(m == mascotaLogica){
+                        contenedorEncontrado = contenedorMascota;
+                        break;
+                    }
+                }
+                if(contenedorEncontrado != null){
+                    panelHabitat.removerMascota(contenedorEncontrado);
+                    break;
+                }
+            }
+        }
+    }
 }
